@@ -1,9 +1,12 @@
 [中文说明](README.zh.md)
 # **_plugin_patch_**
 
+If you have any features you want to add or bugs, please join the QQ group: 945280107 for feedback.
+
 #### Command Line Version Introduction
 
 A script that integrates various software installations on Steam Deck. It is simple and convenient to use, without a graphical interface.
+
 ![Interface Example](image/plugin_patch/plugin_patch.sh.png)
 
 #### Usage Tutorial
