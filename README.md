@@ -1,3 +1,4 @@
+[中文说明](README.zh.md)
 # **_plugin_patch_**
 
 #### Command Line Version Introduction
