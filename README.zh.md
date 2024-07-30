@@ -1,3 +1,4 @@
+[English](README.md)
 #  **_plugin_patch_**
 
 #### 命令行版本介绍
