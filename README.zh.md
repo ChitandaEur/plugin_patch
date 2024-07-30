@@ -1,9 +1,12 @@
 [English](README.md)
 #  **_plugin_patch_**
 
+有想加的功能或有bug请进QQ群：945280107反馈
+
 #### 命令行版本介绍
 
 整合了steamdeck安装各种软件的脚本，使用简单方便，无图形界面
+
 ![界面示例](image/plugin_patch/plugin_patch.sh.png)
 
 
