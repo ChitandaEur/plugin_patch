@@ -1,0 +1,2 @@
+#!/bin/bash
+version_zenity=248
