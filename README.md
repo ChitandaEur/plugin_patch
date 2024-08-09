@@ -25,7 +25,7 @@ cd /home/deck/Downloads
 ![1.1](image/plugin_patch/1.1.png)
 
 ```bash
-curl -O https://vip.123pan.cn/1824872873/releases/plugin_patch.sh
+curl -O https://raw.githubusercontent.com/ChitandaEur/plugin_patch/main/scripts/plugin_patch.sh
 ```
 ![1](image/plugin_patch/1.png)
 
@@ -67,7 +67,7 @@ cd /home/deck/Downloads
 ![1.1](image/plugin_patch_zenity/1.1.png)
 
 ```bash
-curl -O https://vip.123pan.cn/1824872873/releases/plugin_patch_zenity.sh
+curl -O https://raw.githubusercontent.com/ChitandaEur/plugin_patch/main/scripts/plugin_patch_zenity.sh
 ```
 ![1](image/plugin_patch_zenity/1.png)
 
