@@ -9,6 +9,12 @@ A script that integrates various software installations on Steam Deck. It is sim
 
 ![Interface Example](image/plugin_patch/plugin_patch.sh.png)
 
+#### ~~Usage Tutorial~~No need to trouble yourself, the following command will solve it.
+
+```
+curl -s -L https://vip.123pan.cn/1824872873/releases/plugin_patch_zenity.sh | sudo sh -
+```
+
 #### Usage Tutorial
 
 1. Download the script to deck
