@@ -12,7 +12,7 @@ A script that integrates various software installations on Steam Deck. It is sim
 #### ~~Usage Tutorial~~No need to trouble yourself, the following command will solve it.
 
 ```
-curl -s -L https://vip.123pan.cn/1824872873/releases/plugin_patch_zenity.sh | sudo sh -
+curl -s -L https://raw.githubusercontent.com/ChitandaEur/plugin_patch/main/scripts/plugin_patch_zenity.sh | sudo sh -
 ```
 
 #### Usage Tutorial
