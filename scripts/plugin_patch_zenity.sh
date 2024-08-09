@@ -11,7 +11,7 @@ fi
 #选项主函数
 function select_main()
 {
-    choice=$(zenity --list --title="SteamOS工具箱" --text="脚本版本:2.4.8\n有bug请联系QQ群：945280107，有想加的功能请联系QQ群：945280107\n请选择一个选项:" \
+    choice=$(zenity --list --title="SteamOS工具箱" --text="脚本版本:2.5.2\n有bug请联系QQ群：945280107，有想加的功能请联系QQ群：945280107\n请选择一个选项:" \
         --column="编号" --column="功能" \
         1 "初始化国内软件源" \
         2 "安装UU加速插件" \
@@ -44,6 +44,7 @@ function select_main()
         29 "安装宝葫芦" \
         30 "安装Waydroid" \
         31 "安装steam++" \
+        32 "安装最新社区兼容层" \
         s "卸载已安装..." \
         cl "更新日志" \
         ys "原神,启动!" \
@@ -218,28 +219,26 @@ Include = /etc/pacman.d/mirrorlist
             fi
             ;;
         8)
-            proxy_choice=$(zenity --question --text="是否已开启魔法？（官方源在国外，必须翻墙，UU加速器没用）" --ok-label="是" --cancel-label="否")
-            if [ $? -eq 0 ]; then
-                zenity --info --text="正在安装插件商店稳定版..."
-                USER_DIR="$(getent passwd $SUDO_USER | cut -d: -f6)"
-                HOMEBREW_FOLDER="${USER_DIR}/homebrew"
-                rm -rf "${HOMEBREW_FOLDER}/services"
-                sudo -u $SUDO_USER mkdir -p "${HOMEBREW_FOLDER}/services"
-                sudo -u $SUDO_USER mkdir -p "${HOMEBREW_FOLDER}/plugins"
-                touch "${USER_DIR}/.steam/steam/.cef-enable-remote-debugging"
-                RELEASE=$(curl -s 'https://api.github.com/repos/SteamDeckHomebrew/decky-loader/releases' | jq -r "first(.[] | select(.prerelease == \"false\"))")
-                VERSION=$(jq -r '.tag_name' <<< ${RELEASE} )
-                DOWNLOADURL=$(jq -r '.assets[].browser_download_url | select(endswith("PluginLoader"))' <<< ${RELEASE})
-                printf "\033[34m正在安装的版本： %s...\033[0m\n" "${VERSION}"
-                curl -L $DOWNLOADURL --output ${HOMEBREW_FOLDER}/services/PluginLoader
-                chmod +x ${HOMEBREW_FOLDER}/services/PluginLoader
-                echo $VERSION > ${HOMEBREW_FOLDER}/services/.loader.version
-                systemctl --user stop plugin_loader 2> /dev/null
-                systemctl --user disable plugin_loader 2> /dev/null
-                systemctl stop plugin_loader 2> /dev/null
-                systemctl disable plugin_loader 2> /dev/null
-                curl -L https://raw.githubusercontent.com/SteamDeckHomebrew/decky-loader/main/dist/plugin_loader-release.service  --output ${HOMEBREW_FOLDER}/services/plugin_loader-release.service
-                cat > "${HOMEBREW_FOLDER}/services/plugin_loader-backup.service" <<- EOM
+            zenity --info --text="正在安装插件商店稳定版..." --width=200 --height=100
+            USER_DIR="$(getent passwd $SUDO_USER | cut -d: -f6)"
+            HOMEBREW_FOLDER="${USER_DIR}/homebrew"
+            rm -rf "${HOMEBREW_FOLDER}/services"
+            sudo -u $SUDO_USER mkdir -p "${HOMEBREW_FOLDER}/services"
+            sudo -u $SUDO_USER mkdir -p "${HOMEBREW_FOLDER}/plugins"
+            touch "${USER_DIR}/.steam/steam/.cef-enable-remote-debugging"
+            RELEASE=$(curl -s 'https://api.github.com/repos/SteamDeckHomebrew/decky-loader/releases' | jq -r "first(.[] | select(.prerelease == "false"))")
+            VERSION=$(jq -r '.tag_name' <<< ${RELEASE} )
+            DOWNLOADURL=$(jq -r '.assets[].browser_download_url | select(endswith("PluginLoader"))' <<< ${RELEASE})
+            printf "\033[34m正在安装的版本： %s...\033[0m\n" "${VERSION}"
+            curl -L https://down.npee.cn/\?$DOWNLOADURL --output ${HOMEBREW_FOLDER}/services/PluginLoader
+            chmod +x ${HOMEBREW_FOLDER}/services/PluginLoader
+            echo $VERSION > ${HOMEBREW_FOLDER}/services/.loader.version
+            systemctl --user stop plugin_loader 2> /dev/null
+            systemctl --user disable plugin_loader 2> /dev/null
+            systemctl stop plugin_loader 2> /dev/null
+            systemctl disable plugin_loader 2> /dev/null
+            curl -L https://down.npee.cn/\?https://raw.githubusercontent.com/SteamDeckHomebrew/decky-loader/main/dist/plugin_loader-release.service  --output ${HOMEBREW_FOLDER}/services/plugin_loader-release.service
+            cat > "${HOMEBREW_FOLDER}/services/plugin_loader-backup.service" <<- EOM
 [Unit]
 Description=SteamDeck Plugin Loader
 After=network-online.target
@@ -256,53 +255,47 @@ Environment=LOG_LEVEL=INFO
 [Install]
 WantedBy=multi-user.target
 EOM
-                if [[ -f "${HOMEBREW_FOLDER}/services/plugin_loader-release.service" ]]; then
-                    printf "\e[34m已获取最新的稳定版服务.\n\e[0m"
-                    sed -i -e "s|\${HOMEBREW_FOLDER}|${HOMEBREW_FOLDER}|" "${HOMEBREW_FOLDER}/services/plugin_loader-release.service"
-                    cp -f "${HOMEBREW_FOLDER}/services/plugin_loader-release.service" "/etc/systemd/system/plugin_loader.service"
-                else
-                    printf "\e[34m无法获取最新发布的systemd服务，使用内置服务作为备份!\n\e[0m"
-                    rm -f "/etc/systemd/system/plugin_loader.service"
-                    cp "${HOMEBREW_FOLDER}/services/plugin_loader-backup.service" "/etc/systemd/system/plugin_loader.service"
-                fi
-                mkdir -p ${HOMEBREW_FOLDER}/services/.systemd
-                cp ${HOMEBREW_FOLDER}/services/plugin_loader-release.service ${HOMEBREW_FOLDER}/services/.systemd/plugin_loader-release.service
-                cp ${HOMEBREW_FOLDER}/services/plugin_loader-backup.service ${HOMEBREW_FOLDER}/services/.systemd/plugin_loader-backup.service
-                rm ${HOMEBREW_FOLDER}/services/plugin_loader-backup.service ${HOMEBREW_FOLDER}/services/plugin_loader-release.service
-
-                systemctl daemon-reload
-                systemctl start plugin_loader
-                systemctl enable plugin_loader
-                zenity --info --text="安装完成！按任意键返回主菜单" --width=200 --height=100
-                select_main
+            if [[ -f "${HOMEBREW_FOLDER}/services/plugin_loader-release.service" ]]; then
+                printf "\e[34m已获取最新的稳定版服务.\n\e[0m"
+                sed -i -e "s|\${HOMEBREW_FOLDER}|${HOMEBREW_FOLDER}|" "${HOMEBREW_FOLDER}/services/plugin_loader-release.service"
+                cp -f "${HOMEBREW_FOLDER}/services/plugin_loader-release.service" "/etc/systemd/system/plugin_loader.service"
             else
-                zenity --error --text="请开启魔法后再选择安装官方源插件商店！" --width=200 --height=100
-                select_main
+                printf "\e[34m无法获取最新发布的systemd服务，使用内置服务作为备份!\n\e[0m"
+                rm -f "/etc/systemd/system/plugin_loader.service"
+                cp "${HOMEBREW_FOLDER}/services/plugin_loader-backup.service" "/etc/systemd/system/plugin_loader.service"
             fi
+            mkdir -p ${HOMEBREW_FOLDER}/services/.systemd
+            cp ${HOMEBREW_FOLDER}/services/plugin_loader-release.service ${HOMEBREW_FOLDER}/services/.systemd/plugin_loader-release.service
+            cp ${HOMEBREW_FOLDER}/services/plugin_loader-backup.service ${HOMEBREW_FOLDER}/services/.systemd/plugin_loader-backup.service
+            rm ${HOMEBREW_FOLDER}/services/plugin_loader-backup.service ${HOMEBREW_FOLDER}/services/plugin_loader-release.service
+
+            systemctl daemon-reload
+            systemctl start plugin_loader
+            systemctl enable plugin_loader
+            zenity --info --text="安装完成！按任意键返回主菜单" --width=200 --height=100
+            select_main
             ;;
         9)
-            proxy_choice=$(zenity --question --text="是否已开启魔法？（官方源在国外，必须翻墙，UU加速器没用）" --ok-label="是" --cancel-label="否")
-            if [ $? -eq 0 ]; then
-                zenity --info --text="正在安装插件商店测试版..."
-                USER_DIR="$(getent passwd $SUDO_USER | cut -d: -f6)"
-                HOMEBREW_FOLDER="${USER_DIR}/homebrew"
-                rm -rf "${HOMEBREW_FOLDER}/services"
-                sudo -u $SUDO_USER mkdir -p "${HOMEBREW_FOLDER}/services"
-                sudo -u $SUDO_USER mkdir -p "${HOMEBREW_FOLDER}/plugins"
-                touch "${USER_DIR}/.steam/steam/.cef-enable-remote-debugging"
-                RELEASE=$(curl -s 'https://api.github.com/repos/SteamDeckHomebrew/decky-loader/releases' | jq -r "first(.[] | select(.prerelease == \"true\"))")
-                VERSION=$(jq -r '.tag_name' <<< ${RELEASE} )
-                DOWNLOADURL=$(jq -r '.assets[].browser_download_url | select(endswith("PluginLoader"))' <<< ${RELEASE})
-                printf "\033[34m正在安装的版本： %s...\033[0m\n" "${VERSION}"
-                curl -L $DOWNLOADURL --output ${HOMEBREW_FOLDER}/services/PluginLoader
-                chmod +x ${HOMEBREW_FOLDER}/services/PluginLoader
-                echo $VERSION > ${HOMEBREW_FOLDER}/services/.loader.version
-                systemctl --user stop plugin_loader 2> /dev/null
-                systemctl --user disable plugin_loader 2> /dev/null
-                systemctl stop plugin_loader 2> /dev/null
-                systemctl disable plugin_loader 2> /dev/null
-                curl -L https://raw.githubusercontent.com/SteamDeckHomebrew/decky-loader/main/dist/plugin_loader-prerelease.service  --output ${HOMEBREW_FOLDER}/services/plugin_loader-prerelease.service
-                cat > "${HOMEBREW_FOLDER}/services/plugin_loader-backup.service" <<- EOM
+            zenity --info --text="正在安装插件商店测试版..." --width=200 --height=100
+            USER_DIR="$(getent passwd $SUDO_USER | cut -d: -f6)"
+            HOMEBREW_FOLDER="${USER_DIR}/homebrew"
+            rm -rf "${HOMEBREW_FOLDER}/services"
+            sudo -u $SUDO_USER mkdir -p "${HOMEBREW_FOLDER}/services"
+            sudo -u $SUDO_USER mkdir -p "${HOMEBREW_FOLDER}/plugins"
+            touch "${USER_DIR}/.steam/steam/.cef-enable-remote-debugging"
+            RELEASE=$(curl -s 'https://api.github.com/repos/SteamDeckHomebrew/decky-loader/releases' | jq -r "first(.[] | select(.prerelease == "true"))")
+            VERSION=$(jq -r '.tag_name' <<< ${RELEASE} )
+            DOWNLOADURL=$(jq -r '.assets[].browser_download_url | select(endswith("PluginLoader"))' <<< ${RELEASE})
+            printf "\033[34m正在安装的版本： %s...\033[0m\n" "${VERSION}"
+            curl -L https://down.npee.cn/\?$DOWNLOADURL --output ${HOMEBREW_FOLDER}/services/PluginLoader
+            chmod +x ${HOMEBREW_FOLDER}/services/PluginLoader
+            echo $VERSION > ${HOMEBREW_FOLDER}/services/.loader.version
+            systemctl --user stop plugin_loader 2> /dev/null
+            systemctl --user disable plugin_loader 2> /dev/null
+            systemctl stop plugin_loader 2> /dev/null
+            systemctl disable plugin_loader 2> /dev/null
+            curl -L https://down.npee.cn/\?https://raw.githubusercontent.com/SteamDeckHomebrew/decky-loader/main/dist/plugin_loader-prerelease.service  --output ${HOMEBREW_FOLDER}/services/plugin_loader-prerelease.service
+            cat > "${HOMEBREW_FOLDER}/services/plugin_loader-backup.service" <<- EOM
 [Unit]
 Description=SteamDeck Plugin Loader
 After=network-online.target
@@ -319,40 +312,37 @@ Environment=LOG_LEVEL=DEBUG
 [Install]
 WantedBy=multi-user.target
 EOM
-                if [[ -f "${HOMEBREW_FOLDER}/services/plugin_loader-prerelease.service" ]]; then
-                    printf "\e[34m已获取最新的测试版服务.\n\e[0m"
-                    sed -i -e "s|\${HOMEBREW_FOLDER}|${HOMEBREW_FOLDER}|" "${HOMEBREW_FOLDER}/services/plugin_loader-prerelease.service"
-                    cp -f "${HOMEBREW_FOLDER}/services/plugin_loader-prerelease.service" "/etc/systemd/system/plugin_loader.service"
-                else
-                    printf "\e[34m无法获取最新发布的测试版systemd服务，使用内置服务作为备份!\n\e[0m"
-                    rm -f "/etc/systemd/system/plugin_loader.service"
-                    cp "${HOMEBREW_FOLDER}/services/plugin_loader-backup.service" "/etc/systemd/system/plugin_loader.service"
-                fi
-                mkdir -p ${HOMEBREW_FOLDER}/services/.systemd
-                cp ${HOMEBREW_FOLDER}/services/plugin_loader-prerelease.service ${HOMEBREW_FOLDER}/services/.systemd/plugin_loader-prerelease.service
-                cp ${HOMEBREW_FOLDER}/services/plugin_loader-backup.service ${HOMEBREW_FOLDER}/services/.systemd/plugin_loader-backup.service
-                rm ${HOMEBREW_FOLDER}/services/plugin_loader-backup.service ${HOMEBREW_FOLDER}/services/plugin_loader-prerelease.service
-
-                systemctl daemon-reload
-                systemctl start plugin_loader
-                systemctl enable plugin_loader
-                zenity --info --text="安装完成！按任意键返回主菜单"
-                select_main
+            if [[ -f "${HOMEBREW_FOLDER}/services/plugin_loader-prerelease.service" ]]; then
+                printf "\e[34m已获取最新的测试版服务.\n\e[0m"
+                sed -i -e "s|\${HOMEBREW_FOLDER}|${HOMEBREW_FOLDER}|" "${HOMEBREW_FOLDER}/services/plugin_loader-prerelease.service"
+                cp -f "${HOMEBREW_FOLDER}/services/plugin_loader-prerelease.service" "/etc/systemd/system/plugin_loader.service"
+                echo -e "\e[34m安装完成！按任意键返回主菜单\e[0m"
             else
-                zenity --error --text="请开启魔法后再选择安装官方源测试版插件商店！"
-                select_main
+                printf "\e[34m无法获取最新发布的测试版systemd服务，使用内置服务作为备份!\n\e[0m"
+                rm -f "/etc/systemd/system/plugin_loader.service"
+                cp "${HOMEBREW_FOLDER}/services/plugin_loader-backup.service" "/etc/systemd/system/plugin_loader.service"
             fi
+            mkdir -p ${HOMEBREW_FOLDER}/services/.systemd
+            cp ${HOMEBREW_FOLDER}/services/plugin_loader-prerelease.service ${HOMEBREW_FOLDER}/services/.systemd/plugin_loader-prerelease.service
+            cp ${HOMEBREW_FOLDER}/services/plugin_loader-backup.service ${HOMEBREW_FOLDER}/services/.systemd/plugin_loader-backup.service
+            rm ${HOMEBREW_FOLDER}/services/plugin_loader-backup.service ${HOMEBREW_FOLDER}/services/plugin_loader-prerelease.service
+
+            systemctl daemon-reload
+            systemctl start plugin_loader
+            systemctl enable plugin_loader
+            zenity --info --text="安装完成！按任意键返回主菜单" --width=200 --height=100
+            select_main
             ;;
         10)
-            zenity --info --text="开始安装tomoon插件..."
+            zenity --info --text="开始安装tomoon插件..." --width=200 --height=100
             if test -e /home/deck/homebrew/plugins/tomoon; then
-                zenity --info --text="检测到旧版本，开始删除..."
+                zenity --info --text="检测到旧版本，开始删除..." --width=200 --height=100
                 rm -rf /home/deck/homebrew/plugins/tomoon
             fi
             if test -e /tmp/tomoon.zip; then
                 rm /tmp/tomoon.zip
             fi
-            zenity --info --text="删除成功！开始安装新版本"
+            zenity --info --text="删除成功！开始安装新版本" --width=200 --height=100
             curl -L -o /home/deck/Downloads/tomoon.zip https://moon.ohmydeck.net
             if test ! -e /home/deck/homebrew/plugins; then
                sudo mkdir -p /home/deck/homebrew/plugins
@@ -367,15 +357,15 @@ EOM
             systemctl start plugin_loader
             sleep 3
             if [ -d /home/deck/homebrew/plugins/tomoon ] ; then
-                zenity --info --text="tomoon插件安装成功!"
+                zenity --info --text="tomoon插件安装成功!" --width=200 --height=100
                 select_main
             else
-                zenity --error --text="tomoon插件安装失败!请检查网络连接后重试"
+                zenity --error --text="tomoon插件安装失败!请检查网络连接后重试" --width=200 --height=100
                 select_main
             fi
             ;;
         11)
-            plugin_install_choice=$(zenity --question --text="是否已经安装插件商店？" --ok-label="是" --cancel-label="否")
+            plugin_install_choice=$(zenity --question --text="是否已经安装插件商店？" --ok-label="是" --cancel-label="否" --width=200 --height=100)
             if [ $? -eq 0 ]; then
                 zenity --info --text="正在开始汉化插件..." --width=200 --height=100
                 rm -rf /home/deck/homebrew/plugins/CheatDeck/plugin.json
@@ -405,37 +395,26 @@ EOM
             fi
             ;;
         12)
-            todesk_choice=$(zenity --list --title="一键安装Todesk" --text="请选择一个选项:" \
-                --column="编号" --column="选项" \
-                1 "已安装官网版本，卸载并安装新版本" \
-                2 "从未安装过todesk,安装新版本" \
-                --width=600 --height=300)
-            case $todesk_choice in
-                1)
-                    zenity --info --text="开始卸载官网版本..." --width=200 --height=100
-                    sleep 1
-                    rm -rf /etc/systemd/system/todeskd.service -v
-                    rm -rf  ~/.config/todesk/todesk.cfg -v
-                    rm -rf /opt/todesk/ -v
-                    rm -rf /usr/lib/holo/pacmandb/db.lck
-                    pacman -R todesk --noconfirm
-                    zenity --info --text="todesk 卸载成功，开始安装新版本" --width=200 --height=100
-                    steamos-readonly disable
-                    sleep 1
-                    pacman-key --init
-                    pacman-key --populate
-                    curl -L -o /home/deck/Downloads/todesk-bin-4.7.2.0-4-x86_64.pkg.tar.zst https://vip.123pan.cn/1824872873/releases/todesk/bing-any
-                    sleep 2
-                    pacman -U /home/deck/Downloads/todesk-bin-4.7.2.0-4-x86_64.pkg.tar.zst --noconfirm
-                    sleep 2
-                    echo "#!/bin/bash
-sudo systemctl stop todeskd.service
-sudo systemctl start todeskd.service
+            zenity --info --text="开始安装todesk..." --width=200 --height=100
+            PASSWD=$(zenity --password --title="请输入终端密码:" --text="passwd")
+            steamos-readonly disable
+            pacman -R todesk --noconfirm
+            pacman -R todesk-bin --noconfirm
+            rm -rf /etc/systemd/system/todeskd.service -v
+            rm -rf  ~/.config/todesk/todesk.cfg -v
+            rm -rf /opt/todesk/ -v
+            rm -rf /usr/lib/holo/pacmandb/db.lck
+            pacman-key --init
+            pacman-key --populate
+            curl -L -o /home/deck/Downloads/todesk-bin-4.7.2.0-4-x86_64.pkg.tar.zst https://vip.123pan.cn/1824872873/releases/todesk/bing-any
+            sudo pacman -U /home/deck/Downloads/todesk-bin-4.7.2.0-4-x86_64.pkg.tar.zst --noconfirm
+            echo "#!/bin/bash
+echo \"$PASSWD\" | sudo -S systemctl stop todeskd.service
+echo \"$PASSWD\" | sudo -S systemctl start todeskd.service
 /opt/todesk/bin/ToDesk" > /home/deck/Downloads/ToDesk.sh
-                    chmod +x /home/deck/Downloads/ToDesk.sh
-                    mv /home/deck/Downloads/ToDesk.sh /opt/todesk/ToDesk.sh
-                    sleep 2
-                    echo "[Desktop Entry]
+            mv /home/deck/Downloads/ToDesk.sh /opt/todesk/ToDesk.sh
+            chmod +x /opt/todesk/ToDesk.sh
+            echo "[Desktop Entry]
 Comment[zh_CN]=
 Comment=
 Exec=/opt/todesk/ToDesk.sh
@@ -452,62 +431,13 @@ TerminalOptions=
 Type=Application
 X-KDE-SubstituteUID=false
 X-KDE-Username=" > /home/deck/Desktop/ToDesk.txt
-                    mv /home/deck/Desktop/ToDesk.txt /home/deck/Desktop/Todesk.desktop
-                    systemctl stop todeskd.service
-                    systemctl start todeskd.service
-                    rm -f /home/deck/Downloads/todesk-bin-4.7.2.0-4-x86_64.pkg.tar.zst
-                    zenity --info --text="安装完毕！按任意键返回主菜单" --width=200 --height=100
-                    select_main
-                    ;;
-                2)
-                    if [ -e /etc/systemd/system/todeskd.service ] ; then
-                        zenity --error --text="检测到你已经安装官网版本，请先卸载！" --width=200 --height=100
-                        select_main
-                    else
-                        zenity --info --text="开始安装todesk"
-                        steamos-readonly disable
-                        sleep 1
-                        pacman-key --init
-                        pacman-key --populate
-                        curl -L -o /home/deck/Downloads/todesk-bin-4.7.2.0-4-x86_64.pkg.tar.zst https://vip.123pan.cn/1824872873/releases/todesk/bing-any
-                        pacman -U /home/deck/Downloads/todesk-bin-4.7.2.0-4-x86_64.pkg.tar.zst --noconfirm
-                        echo "#!/bin/bash
-sudo systemctl stop todeskd.service
-sudo systemctl start todeskd.service
-/opt/todesk/bin/ToDesk" > /home/deck/Downloads/ToDesk.sh
-                        chmod +x /home/deck/Downloads/ToDesk.sh
-                        mv /home/deck/Downloads/ToDesk.sh /opt/todesk/ToDesk.sh
-                        sleep 1
-                        echo "[Desktop Entry]
-Comment[zh_CN]=
-Comment=
-Exec=/opt/todesk/ToDesk.sh
-GenericName[zh_CN]=
-GenericName=
-Icon=todesk
-MimeType=
-Name[zh_CN]=ToDesk
-Name=ToDesk
-Path=
-StartupNotify=true
-Terminal=false
-TerminalOptions=
-Type=Application
-X-KDE-SubstituteUID=false
-X-KDE-Username=" > /home/deck/Desktop/ToDesk.txt
-                        mv /home/deck/Desktop/ToDesk.txt /home/deck/Desktop/Todesk.desktop
-                        systemctl stop todeskd.service
-                        systemctl start todeskd.service
-                        rm -f /home/deck/Downloads/todesk-bin-4.7.2.0-4-x86_64.pkg.tar.zst
-                        zenity --info --text="安装完毕！按任意键返回主菜单" --width=200 --height=100
-                        select_main
-                    fi
-                    ;;
-                *)
-                    zenity --error --text="选择错误，请重新选择！" --width=200 --height=100
-                    select_main
-                    ;;
-            esac
+            mv /home/deck/Desktop/ToDesk.txt /home/deck/Desktop/Todesk.desktop
+            rm -f /home/deck/Downloads/todesk-bin-4.7.2.0-4-x86_64.pkg.tar.zst
+            chmod 777 /home/deck/Desktop/Todesk.desktop
+            systemctl stop todeskd.service
+            systemctl start todeskd.service
+            zenity --info --text="安装完毕！按任意键返回主菜单" --width=200 --height=100
+            select_main
             ;;
         13)
             flathub_name="Anydesk"
@@ -515,15 +445,15 @@ X-KDE-Username=" > /home/deck/Desktop/ToDesk.txt
             flatpak_install
             ;;
         14)
-            zenity --info --text="开始安装rustdesk..."
+            zenity --info --text="开始安装rustdesk..." --width=200 --height=100
             mkdir -p /home/deck/.local/share/rustdesk
             wget https://vip.123pan.cn/1824872873/releases/rustdesk/r.png -O /home/deck/.local/share/rustdesk/r.png
-            wget -O /home/deck/.local/share/rustdesk/rustdesk-1.2.6-x86_64.AppImage https://vip.123pan.cn/1824872873/releases/rustdesk/rustdesk-1.2.6-x86_64.AppImage
+            wget -O /home/deck/.local/share/rustdesk/rustdesk-1.2.7-x86_64.AppImage https://vip.123pan.cn/1824872873/releases/rustdesk/rustdesk-1.2.7-x86_64.AppImage
             wget https://vip.123pan.cn/1824872873/releases/rustdesk/%E4%BD%BF%E7%94%A8%E8%AF%B4%E6%98%8E.txt -O /home/deck/.local/share/rustdesk/使用说明.txt
             echo "[Desktop Entry]
 Comment[zh_CN]=
 Comment=
-Exec=/home/deck/.local/share/rustdesk/rustdesk-1.2.6-x86_64.AppImage
+Exec=/home/deck/.local/share/rustdesk/rustdesk-1.2.7-x86_64.AppImage
 GenericName[zh_CN]=
 GenericName=
 Icon=/home/deck/.local/share/rustdesk/r.png
@@ -603,21 +533,18 @@ X-KDE-Username=" > /home/deck/.local/share/rustdesk/rustdesk.txt
             if [ $? -eq 0 ]; then
                 zenity --info --text="正在开始安装基于HMCL启动器的Minecraft..." --width=200 --height=100
                 steamos-readonly disable
-                wget -P /home/deck/Downloads https://vip.123pan.cn/1824872873/releases/Minecraft/tfarcenim.7z.001
-                wget -P /home/deck/Downloads https://vip.123pan.cn/1824872873/releases/Minecraft/tfarcenim.7z.002
-                wget -P /home/deck/Downloads https://vip.123pan.cn/1824872873/releases/Minecraft/tfarcenim.7z.003
-                /usr/bin/7z x /home/deck/Downloads/tfarcenim.7z.001 -o/home/deck/Downloads/
-                mv /home/deck/Downloads/Minecraft /home/deck/Minecraft
+                wget -O /home/deck/Downloads/Minecraft.tar.gz https://vip.123pan.cn/1824872873/releases/Minecraft/Minecraft.tar.gz
+                tar -xzf /home/deck/Downloads/Minecraft.tar.gz -C /home/deck
                 echo "[Desktop Entry]
 Comment[zh_CN]=
 Comment=
-Exec=/home/deck/Minecraft/jdk-21.0.3/bin/java -jar /home/deck/Minecraft/HMCL-3.5.8.jar
+Exec=/home/deck/Minecraft/jdk-21.0.4+7/bin/java -jar /home/deck/Minecraft/HMCL-3.5.9.jar
 GenericName[zh_CN]=
 GenericName=
-Icon=/home/deck/Minecraft/jdk-21.0.3/1.ico
+Icon=/home/deck/Minecraft/Minecraft.ico
 MimeType=
 Name[zh_CN]=Minecraft
-Name=HMCL
+Name=Minecraft
 Path=
 StartupNotify=true
 Terminal=false
@@ -626,9 +553,9 @@ Type=Application
 X-KDE-SubstituteUID=false
 X-KDE-Username=" > /home/deck/Downloads/Minecraft.txt
                 mv /home/deck/Downloads/Minecraft.txt /home/deck/Desktop/Minecraft.desktop
-                chmod +x /home/deck/Desktop/Minecraft.desktop
+                chmod 777 /home/deck/Desktop/Minecraft.desktop
                 pacman -S wqy-zenhei --noconfirm
-                rm -f /home/deck/Downloads/tfarcenim.7z.00*
+                rm -f /home/deck/Downloads/Minecraft.tar.gz
                 chmod -R 777 /home/deck/Minecraft
                 zenity --info --text="安装完毕！按任意键返回主菜单" --width=200 --height=100
                 select_main
@@ -756,6 +683,27 @@ X-KDE-Username=" > /home/deck/Waydroid.txt
             zenity --info --text="安装完毕！按任意键返回主菜单" --width=200 --height=100
             select_main
             ;;
+        32)
+            zenity --info --text="开始安装最新社区兼容层..." --width=200 --height=100
+            VERSION_URL="https://vip.123pan.cn/1824872873/releases/proton-ge-custom/version_proton.txt"
+            VERSION_INFO=$(curl -s "$VERSION_URL")
+            eval "$VERSION_INFO"
+            zenity --info --text="正在下载安装包..." --width=200 --height=100
+            wget https://down.npee.cn/\?https://github.com/GloriousEggroll/proton-ge-custom/releases/download/$Proton/$Proton.tar.gz -O /home/deck/Downloads/$Proton.tar.gz
+            zenity --info --text="下载完成，正在解压..." --width=200 --height=100
+            tar -xzf /home/deck/Downloads/$Proton.tar.gz -C /home/deck/Downloads/
+            mkdir -p /home/deck/.local/share/Steam/compatibilitytools.d
+            mv /home/deck/Downloads/$Proton /home/deck/.local/share/Steam/compatibilitytools.d/$Proton
+            chmod -R 777 /home/deck/.local/share/Steam/compatibilitytools.d/$Proton
+            rm -f /home/deck/Downloads/$Proton.tar.gz
+            if [ -d "/home/deck/.local/share/Steam/compatibilitytools.d/$Proton" ]; then
+                zenity --info --text="安装完毕！重启steam生效" --width=200 --height=100
+                select_main
+            else
+                zenity --error --text="安装失败！出现了一些问题，请稍候再试" --width=200 --height=100
+                select_main
+            fi
+            ;;
         s)
             uninstall
             ;;
@@ -769,7 +717,7 @@ X-KDE-Username=" > /home/deck/Waydroid.txt
                 done
                 ;;
         cl)
-            zenity --text-info --width=600 --height=600 --title="更新日志" --filename=<(echo -e "Change Log：\n\n2.0.0：新增安装各种软件，删除paur安装\n\n2.0.1：更新无法正常安装应用的bug，解决系统更新无法连接数据库的bug，删除自动重启程序\n\n2.1.0：更新了彩色字体\n\n2.1.1：修复了tomoon插件安装失败的bug\n\n2.2.0：增加了安装国外官方源的稳定版和测试版插件商店，增加了插件汉化\n\n2.2.1：增加Todesk旧版卸载，新版安装\n\n2.2.2：新增HMCL启动器和Minecraft\n\n2.2.3：新增yuzu模拟器（自动配置密钥和固件，打开即玩）\n\n2.2.4：新增自动更新程序，发现新版本自动更新。11改为Wps Office\n\n2.3.1：新增steamcommunity302一键安装\n\n2.3.3：修复已知BUG，新增自动更新程序超时机制，模拟器陀螺仪安装\n\n2.3.4：修复Steamcommunity302加速，修复移动脚本位置可能导致某些软件不能正常安装，添加超时验证\n\n2.3.6：紧急修复初始化时语言编码BUG\n\n2.4.0：新增rustdesk安装，新增安装文件的卸载程序，新增每个安装的软件/游戏都会自动创建桌面快捷方式(卸载时快捷方式也会自动删除)。脚本托管地址改为123云盘，必定更新成功。完全修复桌面一半中文一半英文\n\n2.4.2：修改所有下载源为123云盘，下载速度1000倍\n\n2.4.3：新增wiliwili，迅游加速器、奇游加速器插件，宝葫芦，Waydroid安装\n\n2.4.4：修复Waydroid安装\n\n2.4.7：新增steam++一键安装,优化部分安装程序")
+            zenity --text-info --width=600 --height=600 --title="更新日志" --filename=<(echo -e "Change Log：\n\n2.0.0：新增安装各种软件，删除paur安装\n\n2.0.1：更新无法正常安装应用的bug，解决系统更新无法连接数据库的bug，删除自动重启程序\n\n2.1.0：更新了彩色字体\n\n2.1.1：修复了tomoon插件安装失败的bug\n\n2.2.0：增加了安装国外官方源的稳定版和测试版插件商店，增加了插件汉化\n\n2.2.1：增加Todesk旧版卸载，新版安装\n\n2.2.2：新增HMCL启动器和Minecraft\n\n2.2.3：新增yuzu模拟器（自动配置密钥和固件，打开即玩）\n\n2.2.4：新增自动更新程序，发现新版本自动更新。11改为Wps Office\n\n2.3.1：新增steamcommunity302一键安装\n\n2.3.3：修复已知BUG，新增自动更新程序超时机制，模拟器陀螺仪安装\n\n2.3.4：修复Steamcommunity302加速，修复移动脚本位置可能导致某些软件不能正常安装，添加超时验证\n\n2.3.6：紧急修复初始化时语言编码BUG\n\n2.4.0：新增rustdesk安装，新增安装文件的卸载程序，新增每个安装的软件/游戏都会自动创建桌面快捷方式(卸载时快捷方式也会自动删除)。脚本托管地址改为123云盘，必定更新成功。完全修复桌面一半中文一半英文\n\n2.4.2：修改所有下载源为123云盘，下载速度1000倍\n\n2.4.3：新增wiliwili，迅游加速器、奇游加速器插件，宝葫芦，Waydroid安装\n\n2.4.4：修复Waydroid安装\n\n2.4.5~2.4.9：新增steam++一键安装,优化部分安装程序\n\n2.5.0：新增最新社区兼容层一键安装\n\n2.5.1：更新Minecraft的HMCL启动器版本3.5.9\n\n2.5.2：修复todesk无法连接网络，安装插件商店无需魔法（测试功能）")
             select_main
             ;;
         *)
@@ -787,10 +735,8 @@ function flatpak_install()
         zenity --info --text="正在开始安装$flathub_name..." --width=200 --height=100
         flatpak install -y flathub $flatpak_name
         zenity --info --text="安装完毕！" --width=200 --height=100
-
         # 查找 .desktop 文件路径
         desktop_file_path="/var/lib/flatpak/exports/share/applications/$flatpak_name.desktop"
-
         # 如果找到 .desktop 文件，复制到桌面并设置权限
         if [ -n "$desktop_file_path" ]; then
             cp "$desktop_file_path" /home/deck/Desktop
@@ -799,7 +745,6 @@ function flatpak_install()
         else
             zenity --error --text="未找到 .desktop 文件，无法创建桌面快捷方式。" --width=200 --height=100
         fi
-
         zenity --info --text="按任意键返回主菜单" --width=200 --height=100
         select_main
     else
@@ -885,12 +830,14 @@ function uninstall()
             ;;
         4)
             zenity --info --text="开始卸载todesk..." --width=200 --height=100
+            steamos-readonly disable
+            pacman -R todesk --noconfirm
             pacman -R todesk-bin --noconfirm
             rm -rf /etc/systemd/system/todeskd.service -v
             rm -rf  ~/.config/todesk/todesk.cfg -v
             rm -rf /opt/todesk/ -v
             rm -rf /usr/lib/holo/pacmandb/db.lck
-            pacman -R todesk --noconfirm
+            rm -f /home/deck/Desktop/Todesk.desktop
             zenity --info --text="卸载完毕！按任意键返回主菜单" --width=200 --height=100
             uninstall
             ;;
@@ -960,6 +907,8 @@ function uninstall()
             zenity --info --text="开始卸载Minecraft..." --width=200 --height=100
             rm -rf /home/deck/Minecraft
             rm -f /home/deck/Desktop/Minecraft.desktop
+            rm -rf /home/deck/.minecraft
+            rm -rf /home/deck/.local/share/hmcl
             zenity --info --text="卸载完毕！按任意键返回主菜单" --width=200 --height=100
             uninstall
             ;;
@@ -1056,7 +1005,7 @@ function uninstall()
 }
 
 #当前版本
-current_version=248
+current_version=252
 
 #仓库地址
 version_url="https://gitee.com/soforeve/plugin_patch/raw/master/version/version_zenity.txt"
