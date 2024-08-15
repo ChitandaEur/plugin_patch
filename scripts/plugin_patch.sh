@@ -13,7 +13,7 @@ function select_main()
 {
     clear
     echo -e "\e[34m                                       SteamOS工具箱\e[0m"
-    echo -e "\e[34m                                      脚本版本:2.5.2\e[0m"
+    echo -e "\e[34m                                      脚本版本:2.5.3\e[0m"
     echo -e "\e[34m     = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =\e[0m"
     echo -e "\e[34m     =   1.初始化国内软件源    =   15.安装QQ             =   29.安装宝葫芦         =\e[0m"
     echo -e "\e[34m     =   2.安装UU加速插件      =   16.安装微信           =   30.安装Waydroid       = \e[0m"
@@ -23,9 +23,9 @@ function select_main()
     echo -e "\e[34m     =   6.steamcommunity302   =   20.安装QQ音乐         =                         =\e[0m"
     echo -e "\e[34m     =   7.安装插件商店        =   21.安装网易云音乐     =                         =\e[0m"
     echo -e "\e[34m     =   8.官方源插件商店      =   22.安装wiliwili       =                         =\e[0m"
-    echo -e "\e[34m     =   9.测试版插件商店      =   23.安装WPS-Office     =                         =\e[0m"
+    echo -e "\e[34m     =   9.测试版插件商店      =   23.安装OBS Stdio      =                         =\e[0m"
     echo -e "\e[34m     =   10.安装tomoon         =   24.安装ProtonUp-Qt    =                         =\e[0m"
-    echo -e "\e[34m     =   11.插件商店汉化       =   25.安装OBS Stdio      =                         =\e[0m"
+    echo -e "\e[34m     =   11.插件商店汉化       =   25.安装WPS-Office     =                         =\e[0m"
     echo -e "\e[34m     =   12.安装todesk         =   26.安装Minecraft      =   s.卸载已安装...       =\e[0m"
     echo -e "\e[34m     =   13.安装Anydesk        =   27.安装yuzu模拟器     =   cl.更新日志           =\e[0m"
     echo -e "\e[34m     =   14.安装rustdesk       =   28.模拟器陀螺仪       =   ys.原神,启动!         =\e[0m"
@@ -44,7 +44,7 @@ function select_main()
 DBPath = /usr/lib/holo/pacmandb/
 HoldPkg     = pacman glibc
         Architecture = auto
-Color
+Colordesktop:/Todesk.desktop
 CheckSpace
 ParallelDownloads = 10
 SigLevel    = Never
@@ -84,7 +84,7 @@ Include = /etc/pacman.d/mirrorlist
             locale-gen
             echo -e "\e[34m初始化完毕!建议立即重启系统\e[0m"
             echo -e "\e[34m按任意键返回主菜单\e[0m"
-            read -n 1
+            read -n 1desktop:/Todesk.desktop
             select_main
             ;;
         2)
@@ -342,30 +342,30 @@ EOM
             ;;
         10)
             echo -e "\e[34m开始安装tomoon插件...\e[0m"
-            if test -e /homedeck/homebrew/plugins/tomoon; then
+            if test -e /home/deck/homebrew/plugins/tomoon; then
                echo -e "\e[34m检测到旧版本，开始删除...\e[0m"
-               rm -rf /homedeck/homebrew/plugins/tomoon
+               rm -rf /home/deck/homebrew/plugins/tomoon
             fi
             if test -e /tmp/tomoon.zip; then
                rm /tmp/tomoon.zip
             fi
             echo -e "\e[34m删除成功！开始安装新版本\e[0m"
-            curl -L -o /home/deck/Downloads/tomoon.zip https://moon.ohmydeck.net
-            if test ! -e /homedeck/homebrew/plugins; then
-               sudo mkdir -p /homedeck/homebrew/plugins
+            curl -L -o /home/deck/Downloads/tomoon.zip https://vip.123pan.cn/1824872873/releases/tomoon/tomoon-v0.2.5.zip
+            if test ! -e /home/deck/homebrew/plugins; then
+               mkdir -p /home/deck/homebrew/plugins
             fi
             systemctl --user stop plugin_loader 2> /dev/null
             systemctl stop plugin_loader 2> /dev/null
             unzip -o -qq /home/deck/Downloads/tomoon.zip -d /home/deck/Downloads/
-            sleep 3
+            sleep 1
             chmod -R 777 /home/deck/Downloads/tomoon
             mv -f /home/deck/Downloads/tomoon /home/deck/homebrew/plugins/tomoon
             rm -f /home/deck/Downloads/tomoon.zip
             systemctl start plugin_loader
-            sleep 3
+            sleep 1
             if [ -d /home/deck/homebrew/plugins/tomoon ] ; then
-               echo -e "\e[34mtomoon插件安装成功!\e[0m"
-               sleep 3
+               echo -e "\e[34mtomoon插件安装成功!按任意键返回主菜单...\e[0m"
+               read -n 1
                select_main
             else
                echo -e "\e[31mtomoon插件安装失败!请检查网络连接后重试\e[0m"
@@ -419,41 +419,34 @@ EOM
             echo -e "\e[34m开始安装todesk\e[0m"
             PASSWD=$(zenity --password --title="请输入终端密码:" --text="passwd")
             steamos-readonly disable
+            pacman-key --init
+            pacman-key --populate
             pacman -R todesk --noconfirm
             pacman -R todesk-bin --noconfirm
             rm -rf /etc/systemd/system/todeskd.service -v
             rm -rf  ~/.config/todesk/todesk.cfg -v
             rm -rf /opt/todesk/ -v
             rm -rf /usr/lib/holo/pacmandb/db.lck
-            pacman-key --init
-            pacman-key --populate
             curl -L -o /home/deck/Downloads/todesk-bin-4.7.2.0-4-x86_64.pkg.tar.zst https://vip.123pan.cn/1824872873/releases/todesk/bing-any
             sudo pacman -U /home/deck/Downloads/todesk-bin-4.7.2.0-4-x86_64.pkg.tar.zst --noconfirm
             echo "#!/bin/bash
 echo \"$PASSWD\" | sudo -S systemctl stop todeskd.service
 echo \"$PASSWD\" | sudo -S systemctl start todeskd.service
-/opt/todesk/bin/ToDesk" > /home/deck/Downloads/ToDesk.sh
-            mv /home/deck/Downloads/ToDesk.sh /opt/todesk/ToDesk.sh
+/opt/todesk/bin/ToDesk" > /opt/todesk/ToDesk.sh
             chmod +x /opt/todesk/ToDesk.sh
             echo "[Desktop Entry]
-Comment[zh_CN]=
-Comment=
+GenericName=远程软件
+Categories=Network;Internet;Application;
 Exec=/opt/todesk/ToDesk.sh
-GenericName[zh_CN]=
-GenericName=
 Icon=todesk
-MimeType=
-Name[zh_CN]=ToDesk
 Name=ToDesk
-Path=
 StartupNotify=true
 Terminal=false
-TerminalOptions=
 Type=Application
-X-KDE-SubstituteUID=false
-X-KDE-Username=" > /home/deck/Desktop/ToDesk.txt
-            mv /home/deck/Desktop/ToDesk.txt /home/deck/Desktop/Todesk.desktop
+Version=4.7.2.0" > /home/deck/.local/share/applications/Todesk.desktop
+            cp /home/deck/.local/share/applications/Todesk.desktop /home/deck/Desktop/
             rm -f /home/deck/Downloads/todesk-bin-4.7.2.0-4-x86_64.pkg.tar.zst
+            rm -f /usr/share/applications/todesk.desktop
             chmod 777 /home/deck/Desktop/Todesk.desktop
             systemctl stop todeskd.service
             systemctl start todeskd.service
@@ -473,24 +466,17 @@ X-KDE-Username=" > /home/deck/Desktop/ToDesk.txt
             wget -O /home/deck/.local/share/rustdesk/rustdesk-1.2.7-x86_64.AppImage https://vip.123pan.cn/1824872873/releases/rustdesk/rustdesk-1.2.7-x86_64.AppImage
             wget https://vip.123pan.cn/1824872873/releases/rustdesk/%E4%BD%BF%E7%94%A8%E8%AF%B4%E6%98%8E.txt -O /home/deck/.local/share/rustdesk/使用说明.txt
             echo "[Desktop Entry]
-Comment[zh_CN]=
-Comment=
+GenericName=远程软件
+Categories=Network;Internet;Application;
 Exec=/home/deck/.local/share/rustdesk/rustdesk-1.2.7-x86_64.AppImage
-GenericName[zh_CN]=
-GenericName=
 Icon=/home/deck/.local/share/rustdesk/r.png
-MimeType=
-Name[zh_CN]=rustdesk
 Name=rustdesk
-Path=
 StartupNotify=true
 Terminal=false
-TerminalOptions=
 Type=Application
-X-KDE-SubstituteUID=false
-X-KDE-Username=" > /home/deck/.local/share/rustdesk/rustdesk.txt
-            chmod -R 777 /home/deck/.local/share/rustdesk
-            mv /home/deck/.local/share/rustdesk/rustdesk.txt /home/deck/Desktop/rustdesk.desktop
+Version=1.2.7" > /home/deck/.local/share/applications/rustdesk.desktop
+            chmod -R 777 /home/deck/.local/share/applications/rustdesk.desktop
+            cp /home/deck/.local/share/applications/rustdesk.desktop /home/deck/Desktop/
             sudo -u deck kate /home/deck/.local/share/rustdesk/使用说明.txt
             echo -e "\e[34m安装完毕！按任意键返回主菜单\e[0m"
             read -n 1
@@ -537,8 +523,8 @@ X-KDE-Username=" > /home/deck/.local/share/rustdesk/rustdesk.txt
             flatpak_install
             ;;
         23)
-            flathub_name=WPS-Office
-            flatpak_name=com.wps.Office
+            flathub_name=OBS\ Studio
+            flatpak_name=com.obsproject.Studio
             flatpak_install
             ;;
         24)
@@ -547,9 +533,47 @@ X-KDE-Username=" > /home/deck/.local/share/rustdesk/rustdesk.txt
             flatpak_install
             ;;
         25)
-            flathub_name=OBS\ Studio
-            flatpak_name=com.obsproject.Studio
-            flatpak_install
+            flathub_name=WPS-Office
+            flatpak_name=com.wps.Office
+            read -p $'\e[34m是否已经初始化国内软件源？y/n:\e[0m' source_run
+            case $source_run in
+                y)
+                    echo -e "\e[34m正在开始安装$flathub_name...\e[0m"
+                    flatpak install -y flathub $flatpak_name
+                    echo -e "\e[34m安装完毕，开始汉化！\e[0m"
+                    wget -P /home/deck/Downloads/ https://vip.123pan.cn/1824872873/releases/WPS2019/mui.tar.gz
+                    tar -xzf /home/deck/Downloads/mui.tar.gz -C /home/deck/Downloads/
+                    rm -rf /var/lib/flatpak/app/com.wps.Office/x86_64/stable/active/files/extra/wps-office/office6/mui
+                    mv /home/deck/Downloads/mui /var/lib/flatpak/app/com.wps.Office/x86_64/stable/active/files/extra/wps-office/office6/mui
+                    chmod -R 777 /var/lib/flatpak/app/com.wps.Office/x86_64/stable/active/files/extra/wps-office/office6/mui
+                    rm -f /home/deck/Downloads/mui.tar.gz
+                    echo -e "\e[34m汉化完成！\e[0m"
+                    # 查找 .desktop 文件路径
+                    desktop_file_path="/var/lib/flatpak/exports/share/applications/$flatpak_name.desktop"
+                    # 如果找到 .desktop 文件，复制到桌面并设置权限
+                    if [ -n "$desktop_file_path" ]; then
+                        cp "$desktop_file_path" /home/deck/Desktop
+                        chmod +x /home/deck/Desktop/$(basename "$desktop_file_path")
+                        echo -e "\e[34m桌面快捷方式创建成功！\e[0m"
+                    else
+                        echo -e "\e[31m未找到 .desktop 文件，无法创建桌面快捷方式。\033[0m"
+                    fi
+                    echo -e "\e[34m按任意键返回主菜单\e[0m"
+                    read -n 1
+                    select_main
+                    ;;
+                n)
+                    echo -e "\033[41;37m请先选择初始化国内软件源后再选择安装$flathub_name！\033[0m"
+                    echo -e "\e[34m按任意键返回主菜单\e[0m"
+                    read -n 1
+                    select_main
+                    ;;
+                *)
+                    echo -e "\e[31m请选择正确的选项！\033[0m"
+                    sleep 2
+                    select_main
+                    ;;
+            esac
             ;;
         26)
             read -p $'\e[34m是否已经初始化国内软件源？y/n:\e[0m' source_run
@@ -560,24 +584,17 @@ X-KDE-Username=" > /home/deck/.local/share/rustdesk/rustdesk.txt
                     wget -O /home/deck/Downloads/Minecraft.tar.gz https://vip.123pan.cn/1824872873/releases/Minecraft/Minecraft.tar.gz
                     tar -xzf /home/deck/Downloads/Minecraft.tar.gz -C /home/deck
                     echo "[Desktop Entry]
-Comment[zh_CN]=
-Comment=
+GenericName=我的世界HMCL启动器
+Categories=Game;
 Exec=/home/deck/Minecraft/jdk-21.0.4+7/bin/java -jar /home/deck/Minecraft/HMCL-3.5.9.jar
-GenericName[zh_CN]=
-GenericName=
 Icon=/home/deck/Minecraft/Minecraft.ico
-MimeType=
-Name[zh_CN]=Minecraft
 Name=Minecraft
-Path=
 StartupNotify=true
 Terminal=false
-TerminalOptions=
 Type=Application
-X-KDE-SubstituteUID=false
-X-KDE-Username=" > /home/deck/Downloads/Minecraft.txt
-                    mv /home/deck/Downloads/Minecraft.txt /home/deck/Desktop/Minecraft.desktop
-                    chmod 777 /home/deck/Desktop/Minecraft.desktop
+Version=3.5.9" > /home/deck/.local/share/applications/Minecraft.desktop
+                    chmod 777 /home/deck/.local/share/applications/Minecraft.desktop
+                    cp /home/deck/.local/share/applications/Minecraft.desktop /home/deck/Desktop/
                     pacman -S wqy-zenhei --noconfirm
                     rm -f /home/deck/Downloads/Minecraft.tar.gz
                     chmod -R 777 /home/deck/Minecraft
@@ -615,24 +632,17 @@ X-KDE-Username=" > /home/deck/Downloads/Minecraft.txt
             chmod -R 777 /home/deck/.local/share/yuzu
             echo -e "\e[34m创建桌面快捷方\e[0m"
             echo "[Desktop Entry]
-Comment[zh_CN]=
-Comment=
+GenericName=任天堂Switch模拟器
+Categories=Game;
 Exec=/home/deck/yuzu/yuzu.AppImage
-GenericName[zh_CN]=
-GenericName=
 Icon=/home/deck/yuzu/yuzu.ico
-MimeType=
-Name[zh_CN]=yuzu
 Name=yuzu
-Path=
 StartupNotify=true
 Terminal=false
-TerminalOptions=
 Type=Application
-X-KDE-SubstituteUID=false
-X-KDE-Username=" > /home/deck/yuzu/yuzu.txt
+Version=Early_Access_4176" > /home/deck/.local/share/applications/yuzu.desktop
             chmod -R 777 /home/deck/yuzu
-            mv /home/deck/yuzu/yuzu.txt /home/deck/Desktop/yuzu.desktop
+            cp /home/deck/.local/share/applications/yuzu.desktop /home/deck/Desktop/
             rm -f /home/deck/Downloads/yz.7z.00*
             chmod +x /home/deck/yuzu/yuzu.AppImage
             echo -e "\e[34m安装完毕！已自动配置好密钥(keys)和固件(firmware)18.0.0，打开即玩，不需要再手动安装\e[0m"
@@ -658,6 +668,19 @@ X-KDE-Username=" > /home/deck/yuzu/yuzu.txt
             echo -e "\e[34m开始安装宝葫芦...\e[0m"
             sleep 1
             curl -s -L https://i.hulu.deckz.fun | sudo sh -
+            echo -e "[Desktop Entry]
+GenericName=一个多功能的工具
+Categories=Game;
+Name=宝葫芦
+Version=0.0.1
+Exec=/home/deck/.fun.deckz/hulu/app/pad/bin/pad
+Path=/home/deck/.fun.deckz/hulu
+Icon=/home/deck/.fun.deckz/hulu/app/icon.png
+Type=Application
+Encoding=UTF-8
+Terminal=false
+Keywords=hulu;宝葫芦;葫芦" > /home/deck/.local/share/applications/hulu.desktop
+            chmod 777 /home/deck/.local/share/applications/hulu.desktop
             echo -e "\e[34m安装完毕！按任意键返回主菜单\e[0m"
             read -n 1
             select_main
@@ -666,7 +689,7 @@ X-KDE-Username=" > /home/deck/yuzu/yuzu.txt
             read -p $'\e[34m是否已开启魔法？（下载源在国外，必须翻墙，UU加速器没用）y/n:\e[0m' proxy_choice
             case $proxy_choice in
                 y)
-#                   echo -e "\e[34m开始安装Waydroid...\e[0m"
+                    echo -e "\e[34m开始安装Waydroid...\e[0m"
                     sleep 1
                     rm -rf /home/deck/SteamOS-Waydroid-Installer
                     SCRIPT_ABSOLUTE_PATH_Waydroid=$(readlink -f "$0")
@@ -675,10 +698,9 @@ X-KDE-Username=" > /home/deck/yuzu/yuzu.txt
                     git clone https://github.com/ryanrudolfoba/SteamOS-Waydroid-Installer
                     cd /home/deck/SteamOS-Waydroid-Installer
                     wget -O /home/deck/SteamOS-Waydroid-Installer/steamos-waydroid-installer.sh https://vip.123pan.cn/1824872873/releases/SteamOS-Waydroid-Installer/steamos-waydroid-installer.sh
-                    chmod +x /home/deck/SteamOS-Waydroid-Installer/steamos-waydroid-installer.sh
                     chmod -R 777 /home/deck/SteamOS-Waydroid-Installer
                     cd /home/deck/SteamOS-Waydroid-Installer/
-                    /home/deck/SteamOS-Waydroid-Installer/steamos-waydroid-installer.sh
+                    sh /home/deck/SteamOS-Waydroid-Installer/steamos-waydroid-installer.sh
                     cd "$SCRIPT_DIRECTORY_plugin_patch"
                     rm -rf /home/deck/SteamOS-Waydroid-Installer
                     wget -O /home/deck/Android_Waydroid/Waydroid-Toolbox.sh https://vip.123pan.cn/1824872873/releases/SteamOS-Waydroid-Installer/Waydroid-Toolbox.sh
@@ -703,7 +725,6 @@ X-KDE-Username=" > /home/deck/Waydroid.txt
                     chmod +x /home/deck/Waydroid.txt
                     mv /home/deck/Waydroid.txt /home/deck/Desktop/Waydroid.desktop
                     echo -e "\e[34m安装完毕！按任意键返回主菜单\e[0m"
-                    steamos-readonly disable
                     read -n 1
                     select_main
                     ;;
@@ -725,6 +746,17 @@ X-KDE-Username=" > /home/deck/Waydroid.txt
             HOME=/home/deck
             curl -sSL https://steampp.net/Install/Linux.sh | bash
             chmod -R 777 /home/deck/WattToolkit
+            rm -f /home/deck/.local/share/applications/Watt\ Toolkit.desktop
+            echo "[Desktop Entry]
+Categories=Utility;Application;
+Exec=/home/deck/WattToolkit/Steam++.sh
+Icon=/home/deck/WattToolkit/Icons/Watt-Toolkit.png
+Name=Watt Toolkit
+StartupNotify=false
+Terminal=false
+Type=Application
+Version=3" > /home/deck/.local/share/applications/Watt\ Toolkit.desktop
+            chmod 777 /home/deck/.local/share/applications/Watt\ Toolkit.desktop
             cp '/home/deck/.local/share/applications/Watt Toolkit.desktop' /home/deck/Desktop/
             HOME=/root
             sudo chmod a+w /etc/hosts
@@ -761,55 +793,38 @@ X-KDE-Username=" > /home/deck/Waydroid.txt
         s)
             uninstall
             ;;
-        ys)
-            clear
-            colors=("30" "31" "32" "33" "34" "35" "36" "37" "90" "91" "92" "93" "94" "95" "96" "97" "100" "101" "102" "103")
-            while true; do
-                color=${colors[$RANDOM % ${#colors[@]}]}
-                echo -e "\e[5;${color}m玩原神玩的         玩原神玩的         玩原神玩的\e[0m"
-                sleep 0.2
-                done
-                ;;
         c)
             echo -e "\e[34m正在开始安装clash...\e[0m"
             echo -e "\e[34m正在下载安装包...\e[0m"
             wget -O /home/deck/Downloads/Clash.for.Windows-0.20.39-x64-linux.tar.gz https://down.clashcn.com/soft/clashcn.com_Clash.for.Windows-0.20.39-x64-linux.tar.gz
             wget -O /home/deck/Downloads/clashcn.com_cfw-cn-app_0.20.39.zip https://down.clashcn.com/soft/clashcn.com_cfw-cn-app_0.20.39.zip
-            tar -xzvf /home/deck/Downloads/Clash.for.Windows-0.20.39-x64-linux.tar.gz -C /home/deck/.local/share/
+            tar -xzf /home/deck/Downloads/Clash.for.Windows-0.20.39-x64-linux.tar.gz -C /home/deck/.local/share/
             mv /home/deck/.local/share/Clash\ for\ Windows-0.20.39-x64-linux /home/deck/.local/share/Clash.for.Windows-0.20.39-x64-linux
             wget https://vip.123pan.cn/1824872873/releases/clash/c.png -O /home/deck/.local/share/Clash.for.Windows-0.20.39-x64-linux/c.png
             sleep 1
             unzip /home/deck/Downloads/clashcn.com_cfw-cn-app_0.20.39.zip -d /home/deck/Downloads/
             echo -e "\e[34m下载完毕！正在开始安装...\e[0m"
             mv -f /home/deck/Downloads/app.asar /home/deck/.local/share/Clash.for.Windows-0.20.39-x64-linux/resources
-            cat << EOF > /home/deck/Downloads/clash.txt
+            cat << EOF > /home/deck/.local/share/applications/clash.desktop
 [Desktop Entry]
-Comment[zh_CN]=
-Comment=
-Exec='/home/deck/.local/share/Clash.for.Windows-0.20.39-x64-linux/clash.sh'
-GenericName[zh_CN]=
-GenericName=
+GenericName=网络代理工具
+Categories=Network;Internet;Application;
+Exec=/home/deck/.local/share/Clash.for.Windows-0.20.39-x64-linux/clash.sh
 Icon=/home/deck/.local/share/Clash.for.Windows-0.20.39-x64-linux/c.png
-MimeType=
-Name[zh_CN]=clash
 Name=clash
-Path=
 StartupNotify=true
 Terminal=false
-TerminalOptions=
 Type=Application
-X-KDE-SubstituteUID=false
-X-KDE-Username=
+Version=0.20.39
 EOF
-            chmod 777 /home/deck/Downloads/clash.txt
-            mv -f /home/deck/Downloads/clash.txt /home/deck/Desktop/clash.desktop
-            cat <<EOL > /home/deck/.local/share/Clash.for.Windows-0.20.39-x64-linux/clash.txt
+            chmod 777 /home/deck/.local/share/applications/clash.desktop
+            cp /home/deck/.local/share/applications/clash.desktop /home/deck/Desktop/
+            cat <<EOL > /home/deck/.local/share/Clash.for.Windows-0.20.39-x64-linux/clash.sh
 #!/bin/bash
 export http_proxy=http://127.0.0.1:7890
 export https_proxy=https://127.0.0.1:7890
 '/home/deck/.local/share/Clash.for.Windows-0.20.39-x64-linux/cfw'
 EOL
-            mv /home/deck/.local/share/Clash.for.Windows-0.20.39-x64-linux/clash.txt /home/deck/.local/share/Clash.for.Windows-0.20.39-x64-linux/clash.sh
             rm -f /home/deck/Downloads/Clash.for.Windows-0.20.39-x64-linux.tar.gz /home/deck/Downloads/clashcn.com_cfw-cn-app_0.20.39.zip
             wget -O "/home/deck/Downloads/使用方法(必看）.zip" "https://vip.123pan.cn/1824872873/releases/clash/syff.zip"
             unzip "/home/deck/Downloads/使用方法(必看）.zip" -d "/home/deck/Downloads/"
@@ -865,6 +880,8 @@ EOL
 2.5.1：更新Minecraft的HMCL启动器版本3.5.9
 
 2.5.2：修复todesk无法连接网络，安装插件商店无需魔法（测试功能）
+
+2.5.3：添加WPS office汉化，更新waydroid到最新版本。优化部分卸载程序，使卸载更彻底
  \e[0m"
             echo -e "\e[34m按任意键返回主菜单\e[0m"
             read -n 1
@@ -920,6 +937,7 @@ function flatpak_uninstall()
     echo -e "\e[34m正在开始卸载$flathub_name...\e[0m"
     flatpak uninstall --assumeyes $flatpak_name
     rm -f /home/deck/Desktop/$flatpak_name.desktop
+    rm -rf /home/deck/.var/app/$flatpak_name
     echo -e "\e[34m卸载完毕！按任意键返回主菜单\e[0m"
     read -n 1
     uninstall
@@ -932,7 +950,7 @@ function uninstall()
     echo -e "\e[34m                               卸载程序\e[0m"
     echo -e "\e[34m        = = = = = = = = = = = = = = = = = = = = = = = = = = =\e[0m"
     echo -e "\e[34m        =   1.卸载UU加速插件      =   15.卸载ProtonUp-Qt    =\e[0m"
-    echo -e "\e[34m        =   2.卸载steam302        =   16.卸载OBS Studio     =\e[0m"
+    echo -e "\e[34m        =   2.卸载steam302        =   16.卸载WPS-Office     =\e[0m"
     echo -e "\e[34m        =   3.卸载插件商店        =   17.卸载Minecraft      =\e[0m"
     echo -e "\e[34m        =   4.卸载todesk          =   18.卸载yuzu           =\e[0m"
     echo -e "\e[34m        =   5.卸载Anydesk         =   19.卸载模拟器陀螺仪   =\e[0m"
@@ -944,7 +962,7 @@ function uninstall()
     echo -e "\e[34m        =   11.卸载百度网盘       =   25.卸载宝葫芦         =\e[0m"
     echo -e "\e[34m        =   12.卸载QQ音乐         =   26.卸载steam++        =\e[0m"
     echo -e "\e[34m        =   13.卸载网易云音乐     =                         =\e[0m"
-    echo -e "\e[34m        =   14.卸载WPS-Office     =   s.回到安装菜单        =\e[0m"
+    echo -e "\e[34m        =   14.卸载OBS Studio     =   s.回到安装菜单        =\e[0m"
     echo -e "\e[34m        = = = = = = = = = = = = = = = = = = = = = = = = = = =\e[0m"
     read -p $'\e[34m请选择:\e[0m' uninstall_choice
     case $uninstall_choice in
@@ -975,7 +993,7 @@ function uninstall()
             ;;
         3)
             echo -e "\e[34m开始卸载插件商店...\e[0m"
-            curl -L https://github.com/SteamDeckHomebrew/decky-installer/releases/latest/download/uninstall.sh | sh
+            curl -L https://down.npee.cn/\?https://github.com/SteamDeckHomebrew/decky-installer/releases/latest/download/uninstall.sh | sh
             echo -e "\e[34m卸载完毕！按任意键返回主菜单\e[0m"
             read -n 1
             uninstall
@@ -990,6 +1008,8 @@ function uninstall()
             rm -rf /opt/todesk/ -v
             rm -rf /usr/lib/holo/pacmandb/db.lck
             rm -f /home/deck/Desktop/Todesk.desktop
+            rm -rf /home/deck/.local/share/todesk
+            rm -f /home/deck/.local/share/applications/Todesk.desktop
             echo -e "\e[34m卸载完毕！按任意键返回主菜单\e[0m"
             read -n 1
             uninstall
@@ -1004,6 +1024,7 @@ function uninstall()
             echo -e "\e[34m开始卸载rustdesk...\e[0m"
             rm -rf /home/deck/.local/share/rustdesk
             rm -f /home/deck/Desktop/rustdesk.desktop
+            rm -f /home/deck/.local/share/applications/rustdesk.desktop
             echo -e "\e[34m卸载完毕！按任意键返回主菜单\e[0m"
             read -n 1
             uninstall
@@ -1051,8 +1072,8 @@ function uninstall()
             flatpak_uninstall
             ;;
         14)
-            flathub_name=WPS-Office
-            flatpak_name=com.wps.Office
+            flathub_name=OBS\ Studio
+            flatpak_name=com.obsproject.Studio
             echo -e "\e[34m开始卸载$flathub_name...\e[0m"
             flatpak_uninstall
             ;;
@@ -1063,8 +1084,8 @@ function uninstall()
             flatpak_uninstall
             ;;
         16)
-            flathub_name=OBS\ Studio
-            flatpak_name=com.obsproject.Studio
+            flathub_name=WPS-Office
+            flatpak_name=com.wps.Office
             echo -e "\e[34m开始卸载$flathub_name...\e[0m"
             flatpak_uninstall
             ;;
@@ -1072,6 +1093,7 @@ function uninstall()
             echo -e "\e[34m开始卸载Minecraft...\e[0m"
             rm -rf /home/deck/Minecraft
             rm -f /home/deck/Desktop/Minecraft.desktop
+            rm -f /home/deck/.local/share/applications/Minecraft.desktop
             rm -rf /home/deck/.minecraft
             rm -rf /home/deck/.local/share/hmcl
             echo -e "\e[34m卸载完毕！按任意键返回主菜单\e[0m"
@@ -1083,6 +1105,7 @@ function uninstall()
             rm -rf /home/deck/yuzu
             rm -rf /home/deck/.local/share/yuzu
             rm -f /home/deck/Desktop/yuzu.desktop
+            rm -f /home/deck/.local/share/applications/yuzu.desktop
             echo -e "\e[34m卸载完毕！按任意键返回主菜单\e[0m"
             read -n 1
             uninstall
@@ -1100,6 +1123,7 @@ function uninstall()
             echo -e "\e[34m开始卸载clash...\e[0m"
             rm -rf /home/deck/.local/share/Clash.for.Windows-0.20.39-x64-linux
             rm -f /home/deck/Desktop/clash.desktop
+            rm -f /home/deck/.local/share/applications/clash.desktop
             echo -e "\e[34m卸载完毕！按任意键返回主菜单\e[0m"
             read -n 1
             uninstall
@@ -1149,6 +1173,7 @@ function uninstall()
             rm -rf /root/Android_Waydroid
             rm -rf /root/waydroid
             steamos-readonly disable
+            sleep 1
             echo -e "\e[34m卸载完毕！按任意键返回主菜单\e[0m"
             read -n 1
             uninstall
@@ -1156,17 +1181,19 @@ function uninstall()
         25)
             echo -e "\e[34m开始卸载宝葫芦...\e[0m"
             curl -L https://i.hulu.deckz.fun/u.sh | sudo sh -
+            rm -f /home/deck/.local/share/applications/hulu.desktop
             echo -e "\e[34m卸载完毕！按任意键返回主菜单\e[0m"
             read -n 1
             uninstall
             ;;
         26)
             echo -e "\e[34m开始卸载steam++...\e[0m"
+            rm -f /home/deck/.local/share/applications/Watt\ Toolkit.desktop
+            rm -rf /home/deck/.local/share/.local
+            rm -rf /home/deck/.local/share/.cache
+            rm -f /home/deck/Desktop/Watt\ Toolkit.desktop
             chmod 777 /home/deck/WattToolkit/script/uninstall.sh
             sh /home/deck/WattToolkit/script/uninstall.sh
-            rm -f /home/deck/.local/share/applications/Watt\ Toolkit.desktop
-            rm -f /home/deck/Desktop/Watt\ Toolkit.desktop
-            rm -rf /home/deck/.local/share/.local
             echo -e "\e[34m卸载完毕！按任意键返回主菜单\e[0m"
             read -n 1
             uninstall
@@ -1183,7 +1210,7 @@ function uninstall()
 }
 
 #当前版本
-version=252
+version=253
 
 #仓库地址
 REMOTE_VERSION_URL="https://gitee.com/soforeve/plugin_patch/raw/master/version/version.txt"
