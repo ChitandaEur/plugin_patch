@@ -12,7 +12,7 @@ A script that integrates various software installations on Steam Deck. It is sim
 #### ~~Usage Tutorial~~No need to trouble yourself, the following command will solve it.
 
 ```
-curl -s -L https://raw.githubusercontent.com/ChitandaEur/plugin_patch/main/scripts/plugin_patch_zenity.sh | sudo sh -
+curl -s -L https://raw.githubusercontent.com/ChitandaEur/plugin_patch/main/plugin_patch_zenity.sh | sudo sh -
 ```
 
 #### Usage Tutorial
@@ -25,7 +25,7 @@ cd /home/deck/Downloads
 ![1.1](image/plugin_patch/1.1.png)
 
 ```bash
-curl -O https://raw.githubusercontent.com/ChitandaEur/plugin_patch/main/scripts/plugin_patch.sh
+curl -O https://raw.githubusercontent.com/ChitandaEur/plugin_patch/main/plugin_patch.sh
 ```
 ![1](image/plugin_patch/1.png)
 
@@ -67,7 +67,7 @@ cd /home/deck/Downloads
 ![1.1](image/plugin_patch_zenity/1.1.png)
 
 ```bash
-curl -O https://raw.githubusercontent.com/ChitandaEur/plugin_patch/main/scripts/plugin_patch_zenity.sh
+curl -O https://raw.githubusercontent.com/ChitandaEur/plugin_patch/main/plugin_patch_zenity.sh
 ```
 ![1](image/plugin_patch_zenity/1.png)
 
