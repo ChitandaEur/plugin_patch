@@ -13,7 +13,7 @@ function select_main()
 {
     clear
     echo -e "\e[34m                                       SteamOS工具箱\e[0m"
-    echo -e "\e[34m                                      脚本版本:2.5.3\e[0m"
+    echo -e "\e[34m                                      脚本版本:2.5.7\e[0m"
     echo -e "\e[34m     = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =\e[0m"
     echo -e "\e[34m     =   1.初始化国内软件源    =   15.安装QQ             =   29.安装宝葫芦         =\e[0m"
     echo -e "\e[34m     =   2.安装UU加速插件      =   16.安装微信           =   30.安装Waydroid       = \e[0m"
@@ -25,13 +25,13 @@ function select_main()
     echo -e "\e[34m     =   8.官方源插件商店      =   22.安装wiliwili       =                         =\e[0m"
     echo -e "\e[34m     =   9.测试版插件商店      =   23.安装OBS Stdio      =                         =\e[0m"
     echo -e "\e[34m     =   10.安装tomoon         =   24.安装ProtonUp-Qt    =                         =\e[0m"
-    echo -e "\e[34m     =   11.插件商店汉化       =   25.安装WPS-Office     =                         =\e[0m"
+    echo -e "\e[34m     =   11.插件汉化           =   25.安装WPS-Office     =                         =\e[0m"
     echo -e "\e[34m     =   12.安装todesk         =   26.安装Minecraft      =   s.卸载已安装...       =\e[0m"
     echo -e "\e[34m     =   13.安装Anydesk        =   27.安装yuzu模拟器     =   cl.更新日志           =\e[0m"
     echo -e "\e[34m     =   14.安装rustdesk       =   28.模拟器陀螺仪       =   ys.原神,启动!         =\e[0m"
     echo -e "\e[34m     = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =\e[0m"
     echo -e "\e[34m有bug请联系QQ群：945280107，有想加的功能请联系QQ群：945280107\e[0m"
-    read -p $'\e[34m请选择:\e[0m' main_choice
+    read -p $'\e[34m请选择：\e[0m' main_choice
 
     case $main_choice in
         1)
@@ -68,8 +68,8 @@ Include = /etc/pacman.d/mirrorlist
 [multilib-3.5]
 Include = /etc/pacman.d/mirrorlist
 
-[archlinuxcn]" | sudo tee /etc/pacman.conf > /dev/null
-            echo 'Server = https://mirrors.aliyun.com/archlinuxcn/$arch'>>/etc/pacman.conf
+[archlinuxcn]
+Server = https://mirrors.aliyun.com/archlinuxcn/\$arch" | sudo tee /etc/pacman.conf > /dev/null
             rm -rf /etc/pacman.d/gnupg
             pacman-key --init
             pacman-key --populate
@@ -82,21 +82,20 @@ Include = /etc/pacman.d/mirrorlist
             rm -rf ~/.cache/locale
             echo "LANG=zh_CN.UTF-8" | sudo tee /etc/locale.conf > /dev/null
             locale-gen
-            echo -e "\e[34m初始化完毕!建议立即重启系统\e[0m"
-            echo -e "\e[34m按任意键返回主菜单\e[0m"
-            read -n 1desktop:/Todesk.desktop
+            echo -e "\e[34m初始化完毕!建议立即重启系统\n按任意键返回主菜单\e[0m"
+            read -n 1
             select_main
             ;;
         2)
             echo -e "\e[34m开始安装UU加速器插件...\e[0m"
             sudo curl -s uudeck.com|sudo sh
             if [ -e /home/deck/uu ] ; then
-                echo -e "\e[34mUU加速器插件安装完毕!\e[0m"
-                sleep 3
+                echo -e "\e[34mUU加速器插件安装完毕!\n按任意键返回主菜单\e[0m"
+                read -n 1
                 select_main
             else
-                echo -e "\e[34mUU加速器插件安装失败!请检查网络后重试\e[0m"
-                echo -e "\e[34m按任意键返回主菜单\e[0m"
+                echo -e "\e[31mUU加速器插件安装失败!请检查网络后重试\e[0m"
+                echo -e "\e[34mUU按任意键返回主菜单\e[0m"
                 read -n 1
                 select_main
             fi
@@ -109,7 +108,7 @@ Include = /etc/pacman.d/mirrorlist
                 sleep 3
                 select_main
             else
-                echo -e "\e[34m加速器插件安装失败!请检查网络后重试\e[0m"
+                echo -e "\e[31m加速器插件安装失败!请检查网络后重试\e[0m"
                 echo -e "\e[34m按任意键返回主菜单\e[0m"
                 read -n 1
                 select_main
@@ -123,7 +122,7 @@ Include = /etc/pacman.d/mirrorlist
                 sleep 3
                 select_main
             else
-                echo -e "\e[34m加速器插件安装失败!请检查网络后重试\e[0m"
+                echo -e "\e[31m加速器插件安装失败!请检查网络后重试\e[0m"
                 echo -e "\e[34m按任意键返回主菜单\e[0m"
                 read -n 1
                 select_main
@@ -140,8 +139,8 @@ Include = /etc/pacman.d/mirrorlist
                 dd if=/dev/zero of=/home/swapfile bs=1024M count=$swapfilesize
                 mkswap /home/swapfile
                 swapon /home/swapfile
-                echo -e "\e[34m调整完成!3秒后返回主菜单!\e[0m"
-                sleep 3
+                echo -e "\e[34m调整完成!按任意键返回主菜单\e[0m"
+                read -n 1
                 select_main
             else
                 select_main
@@ -158,36 +157,22 @@ Include = /etc/pacman.d/mirrorlist
             echo -e "\e[34m         =    上次证书更新日期：     2024.06.26    =\e[0m"
             echo -e "\e[34m         =    预计下次证书更新日期： 2024.10.01    =\e[0m"
             echo -e "\e[34m         = = = = = = = = = = = = = = = = = = = = = =\e[0m"
-            read -p $'\e[34m请选择:\e[0m' steamcommunity302_choice
+            read -p $'\e[34m请选择：\e[0m' steamcommunity302_choice
             case $steamcommunity302_choice in
-                1)
+                1|2)
+                    SCRIPT_ABSOLUTE_PATH__302=$(readlink -f "$0")
+                    SCRIPT_DIRECTORY_plugin_patch=$(dirname "$SCRIPT_ABSOLUTE_PATH__302")
+                    if [ $steamcommunity302_choice -eq 2 ]; then
+                        echo -e "\e[34m重新安装steamcommunity302...\e[0m"
+                        sleep 1
+                        echo -e "\e[34m卸载旧版本...\e[0m"
+                        sleep 1
+                        cd /home/deck/.local/share/SteamDeck_302/
+                        chmod +x /home/deck/.local/share/SteamDeck_302/uninstall.sh
+                        sh /home/deck/.local/share/SteamDeck_302/uninstall.sh
+                        cd "$SCRIPT_DIRECTORY_plugin_patch"
+                    fi
                     echo -e "\e[34m开始安装steamcommunity302...\e[0m"
-                    # 获取当前脚本的绝对路径并存储在特殊变量名中
-                    SCRIPT_ABSOLUTE_PATH__302=$(readlink -f "$0")
-                    SCRIPT_DIRECTORY_plugin_patch=$(dirname "$SCRIPT_ABSOLUTE_PATH__302")
-                    rm -rf /home/deck/.local/share/SteamDeck_302
-                    wget -q https://vip.123pan.cn/1824872873/releases/steamcommunity302/302 -O /home/deck/Downloads/302.zip
-                    unzip /home/deck/Downloads/302.zip -d /home/deck/.local/share/
-                    rm -f /home/deck/Downloads/302.zip
-                    chmod 777 /home/deck/.local/share/SteamDeck_302
-                    cd /home/deck/.local/share/SteamDeck_302/
-                    sh /home/deck/.local/share/SteamDeck_302/install.sh
-                    cd "$SCRIPT_DIRECTORY_plugin_patch"
-                    echo -e "\e[34m安装完毕！按任意键返回主菜单\e[0m"
-                    read -n 1
-                    select_main
-                    ;;
-                2)
-                    SCRIPT_ABSOLUTE_PATH__302=$(readlink -f "$0")
-                    SCRIPT_DIRECTORY_plugin_patch=$(dirname "$SCRIPT_ABSOLUTE_PATH__302")
-                    echo -e "\e[34m开始重新安装steamcommunity302...\e[0m"
-                    echo -e "\e[34m卸载旧版本...\e[0m"
-                    sleep 1
-                    cd /home/deck/.local/share/SteamDeck_302/
-                    chmod +x cd /home/deck/.local/share/SteamDeck_302/uninstall.sh
-                    sh /home/deck/.local/share/SteamDeck_302/uninstall.sh
-                    cd "$SCRIPT_DIRECTORY_plugin_patch"
-                    echo -e "\e[34m开始安装新版本...\e[0m"
                     sleep 1
                     rm -rf /home/deck/.local/share/SteamDeck_302
                     wget -q https://vip.123pan.cn/1824872873/releases/steamcommunity302/302 -O /home/deck/Downloads/302.zip
@@ -202,7 +187,7 @@ Include = /etc/pacman.d/mirrorlist
                     select_main
                     ;;
                 *)
-                    echo -e "\e[34m请选择正确的选项！\e[0m"
+                    echo -e "\e[31m请选择正确的选项！\e[0m"
                     sleep 2
                     select_main
                     ;;
@@ -213,8 +198,8 @@ Include = /etc/pacman.d/mirrorlist
             rm -rf /home/deck/homebrew
             curl -L dl.ohmydeck.net|sh
             if [ -e /etc/systemd/system/plugin_loader.service ] ; then
-                echo -e "\e[34m插件商店安装成功!\e[0m"
-                sleep 3
+                echo -e "\e[34m插件商店安装成功!按任意键返回主菜单\e[0m"
+                read -n 1
                 select_main
             else
                 echo -e "\e[31m插件商店安装失败!请检查网络连接后重试\e[0m"
@@ -225,143 +210,35 @@ Include = /etc/pacman.d/mirrorlist
             ;;
         8)
             echo -e "\033[41;37m正在安装插件商店稳定版\e[0m"
-            USER_DIR="$(getent passwd $SUDO_USER | cut -d: -f6)"
-            HOMEBREW_FOLDER="${USER_DIR}/homebrew"
-            rm -rf "${HOMEBREW_FOLDER}/services"
-            sudo -u $SUDO_USER mkdir -p "${HOMEBREW_FOLDER}/services"
-            sudo -u $SUDO_USER mkdir -p "${HOMEBREW_FOLDER}/plugins"
-            touch "${USER_DIR}/.steam/steam/.cef-enable-remote-debugging"
-            RELEASE=$(curl -s 'https://api.github.com/repos/SteamDeckHomebrew/decky-loader/releases' | jq -r "first(.[] | select(.prerelease == "false"))")
-            VERSION=$(jq -r '.tag_name' <<< ${RELEASE} )
-            DOWNLOADURL=$(jq -r '.assets[].browser_download_url | select(endswith("PluginLoader"))' <<< ${RELEASE})
-            printf "\033[34m正在安装的版本： %s...\033[0m\n" "${VERSION}"
-            curl -L https://down.npee.cn/\?$DOWNLOADURL --output ${HOMEBREW_FOLDER}/services/PluginLoader
-            chmod +x ${HOMEBREW_FOLDER}/services/PluginLoader
-            echo $VERSION > ${HOMEBREW_FOLDER}/services/.loader.version
-            systemctl --user stop plugin_loader 2> /dev/null
-            systemctl --user disable plugin_loader 2> /dev/null
-            systemctl stop plugin_loader 2> /dev/null
-            systemctl disable plugin_loader 2> /dev/null
-            curl -L https://down.npee.cn/\?https://raw.githubusercontent.com/SteamDeckHomebrew/decky-loader/main/dist/plugin_loader-release.service  --output ${HOMEBREW_FOLDER}/services/plugin_loader-release.service
-            cat > "${HOMEBREW_FOLDER}/services/plugin_loader-backup.service" <<- EOM
-[Unit]
-Description=SteamDeck Plugin Loader
-After=network-online.target
-Wants=network-online.target
-[Service]
-Type=simple
-User=root
-Restart=always
-ExecStart=${HOMEBREW_FOLDER}/services/PluginLoader
-WorkingDirectory=${HOMEBREW_FOLDER}/services
-KillSignal=SIGKILL
-Environment=PLUGIN_PATH=${HOMEBREW_FOLDER}/plugins
-Environment=LOG_LEVEL=INFO
-[Install]
-WantedBy=multi-user.target
-EOM
-            if [[ -f "${HOMEBREW_FOLDER}/services/plugin_loader-release.service" ]]; then
-                printf "\e[34m已获取最新的稳定版服务.\n\e[0m"
-                sed -i -e "s|\${HOMEBREW_FOLDER}|${HOMEBREW_FOLDER}|" "${HOMEBREW_FOLDER}/services/plugin_loader-release.service"
-                cp -f "${HOMEBREW_FOLDER}/services/plugin_loader-release.service" "/etc/systemd/system/plugin_loader.service"
-            else
-                printf "\e[34m无法获取最新发布的systemd服务，使用内置服务作为备份!\n\e[0m"
-                rm -f "/etc/systemd/system/plugin_loader.service"
-                cp "${HOMEBREW_FOLDER}/services/plugin_loader-backup.service" "/etc/systemd/system/plugin_loader.service"
-            fi
-            mkdir -p ${HOMEBREW_FOLDER}/services/.systemd
-            cp ${HOMEBREW_FOLDER}/services/plugin_loader-release.service ${HOMEBREW_FOLDER}/services/.systemd/plugin_loader-release.service
-            cp ${HOMEBREW_FOLDER}/services/plugin_loader-backup.service ${HOMEBREW_FOLDER}/services/.systemd/plugin_loader-backup.service
-            rm ${HOMEBREW_FOLDER}/services/plugin_loader-backup.service ${HOMEBREW_FOLDER}/services/plugin_loader-release.service
-
-            systemctl daemon-reload
-            systemctl start plugin_loader
-            systemctl enable plugin_loader
-            echo -e "\e[34m安装完成！按任意键返回主菜单\e[0m"
-            read -n 1
-            select_main
+            install_plugin_loader "false"
             ;;
         9)
             echo -e "\033[41;37m正在安装插件商店测试版\e[0m"
-            USER_DIR="$(getent passwd $SUDO_USER | cut -d: -f6)"
-            HOMEBREW_FOLDER="${USER_DIR}/homebrew"
-            rm -rf "${HOMEBREW_FOLDER}/services"
-            sudo -u $SUDO_USER mkdir -p "${HOMEBREW_FOLDER}/services"
-            sudo -u $SUDO_USER mkdir -p "${HOMEBREW_FOLDER}/plugins"
-            touch "${USER_DIR}/.steam/steam/.cef-enable-remote-debugging"
-            RELEASE=$(curl -s 'https://api.github.com/repos/SteamDeckHomebrew/decky-loader/releases' | jq -r "first(.[] | select(.prerelease == "true"))")
-            VERSION=$(jq -r '.tag_name' <<< ${RELEASE} )
-            DOWNLOADURL=$(jq -r '.assets[].browser_download_url | select(endswith("PluginLoader"))' <<< ${RELEASE})
-            printf "\033[34m正在安装的版本： %s...\033[0m\n" "${VERSION}"
-            curl -L https://down.npee.cn/\?$DOWNLOADURL --output ${HOMEBREW_FOLDER}/services/PluginLoader
-            chmod +x ${HOMEBREW_FOLDER}/services/PluginLoader
-            echo $VERSION > ${HOMEBREW_FOLDER}/services/.loader.version
-            systemctl --user stop plugin_loader 2> /dev/null
-            systemctl --user disable plugin_loader 2> /dev/null
-            systemctl stop plugin_loader 2> /dev/null
-            systemctl disable plugin_loader 2> /dev/null
-            curl -L https://down.npee.cn/\?https://raw.githubusercontent.com/SteamDeckHomebrew/decky-loader/main/dist/plugin_loader-prerelease.service  --output ${HOMEBREW_FOLDER}/services/plugin_loader-prerelease.service
-            cat > "${HOMEBREW_FOLDER}/services/plugin_loader-backup.service" <<- EOM
-[Unit]
-Description=SteamDeck Plugin Loader
-After=network-online.target
-Wants=network-online.target
-[Service]
-Type=simple
-User=root
-Restart=always
-ExecStart=${HOMEBREW_FOLDER}/services/PluginLoader
-WorkingDirectory=${HOMEBREW_FOLDER}/services
-KillSignal=SIGKILL
-Environment=PLUGIN_PATH=${HOMEBREW_FOLDER}/plugins
-Environment=LOG_LEVEL=DEBUG
-[Install]
-WantedBy=multi-user.target
-EOM
-            if [[ -f "${HOMEBREW_FOLDER}/services/plugin_loader-prerelease.service" ]]; then
-                printf "\e[34m已获取最新的测试版服务.\n\e[0m"
-                sed -i -e "s|\${HOMEBREW_FOLDER}|${HOMEBREW_FOLDER}|" "${HOMEBREW_FOLDER}/services/plugin_loader-prerelease.service"
-                cp -f "${HOMEBREW_FOLDER}/services/plugin_loader-prerelease.service" "/etc/systemd/system/plugin_loader.service"
-                echo -e "\e[34m安装完成！按任意键返回主菜单\e[0m"
-            else
-                printf "\e[34m无法获取最新发布的测试版systemd服务，使用内置服务作为备份!\n\e[0m"
-                rm -f "/etc/systemd/system/plugin_loader.service"
-                cp "${HOMEBREW_FOLDER}/services/plugin_loader-backup.service" "/etc/systemd/system/plugin_loader.service"
-            fi
-            mkdir -p ${HOMEBREW_FOLDER}/services/.systemd
-            cp ${HOMEBREW_FOLDER}/services/plugin_loader-prerelease.service ${HOMEBREW_FOLDER}/services/.systemd/plugin_loader-prerelease.service
-            cp ${HOMEBREW_FOLDER}/services/plugin_loader-backup.service ${HOMEBREW_FOLDER}/services/.systemd/plugin_loader-backup.service
-            rm ${HOMEBREW_FOLDER}/services/plugin_loader-backup.service ${HOMEBREW_FOLDER}/services/plugin_loader-prerelease.service
-
-            systemctl daemon-reload
-            systemctl start plugin_loader
-            systemctl enable plugin_loader
-            echo -e "\e[34m安装完成！按任意键返回主菜单\e[0m"
-            read -n 1
-            select_main
+            install_plugin_loader "true"
             ;;
         10)
             echo -e "\e[34m开始安装tomoon插件...\e[0m"
             if test -e /home/deck/homebrew/plugins/tomoon; then
                echo -e "\e[34m检测到旧版本，开始删除...\e[0m"
                rm -rf /home/deck/homebrew/plugins/tomoon
+               echo -e "\e[34m删除成功！开始安装新版本\e[0m"
             fi
             if test -e /tmp/tomoon.zip; then
                rm /tmp/tomoon.zip
             fi
-            echo -e "\e[34m删除成功！开始安装新版本\e[0m"
             curl -L -o /home/deck/Downloads/tomoon.zip https://vip.123pan.cn/1824872873/releases/tomoon/tomoon-v0.2.5.zip
             if test ! -e /home/deck/homebrew/plugins; then
                mkdir -p /home/deck/homebrew/plugins
             fi
-            systemctl --user stop plugin_loader 2> /dev/null
-            systemctl stop plugin_loader 2> /dev/null
+            echo -e "\e[34m在开始前，先停止插件商店服务的运行，请耐心等待几秒...\e[0m"
+            sudo systemctl stop plugin_loader 2> /dev/null
             unzip -o -qq /home/deck/Downloads/tomoon.zip -d /home/deck/Downloads/
             sleep 1
             chmod -R 777 /home/deck/Downloads/tomoon
             mv -f /home/deck/Downloads/tomoon /home/deck/homebrew/plugins/tomoon
             rm -f /home/deck/Downloads/tomoon.zip
-            systemctl start plugin_loader
+            echo -e "\e[34m重新开启插件商店服务...\e[0m"
+            sudo systemctl start plugin_loader
             sleep 1
             if [ -d /home/deck/homebrew/plugins/tomoon ] ; then
                echo -e "\e[34mtomoon插件安装成功!按任意键返回主菜单...\e[0m"
@@ -375,45 +252,43 @@ EOM
             fi
             ;;
         11)
-            read -p $'\e[34m是否已经安装插件商店？y/n:\e[0m' plugin_install_choice
-            case $plugin_install_choice in
-                y)
-                    echo -e "\e[34m正在开始汉化插件...\e[0m"
-                    rm -rf /home/deck/homebrew/plugins/CheatDeck/plugin.json
-                    rm -rf /home/deck/homebrew/plugins/CheatDeck/dist/index.js
-                    rm -rf /home/deck/homebrew/plugins/decky-steamgriddb/plugin.json
-                    rm -rf /home/deck/homebrew/plugins/decky-storage-cleaner/dist/index.js
-                    rm -rf /home/deck/homebrew/plugins/decky-storage-cleaner/plugin.json
-                    rm -rf /home/deck/homebrew/plugins/protondb-decky/plugin.json
-                    rm -rf /home/deck/homebrew/plugins/SDH-AnimationChanger/plugin.json
-                    rm -rf /home/deck/homebrew/plugins/SDH-AnimationChanger/dist/index.js
-                    rm -rf /home/deck/homebrew/plugins/SDH-CssLoader/plugin.json
-                    rm -rf /home/deck/homebrew/plugins/SDH-CssLoader/dist/index.js
-                    rm -rf /home/deck/homebrew/plugins/tomoon/plugin.json
-                    rm -rf /home/deck/homebrew/plugins/tomoon/dist/index.js
-                    rm -rf /home/deck/homebrew/plugins/PowerTools/plugin.json
-                    wget -O /home/deck/Downloads/homebrew.7z https://gitee.com/songy171/decky-chs/raw/master/homebrew.7z
-                    /usr/bin/7z x /home/deck/Downloads/homebrew.7z -o/home/deck/Downloads/
-                    chmod -R 777 /home/deck/Downloads/homebrew
-                    cp -rf /home/deck/Downloads/homebrew /home/deck
-                    rm -rf /home/deck/Downloads/homebrew.7z
-                    rm -rf /home/deck/Downloads/homebrew
-                    echo -e "\e[34m汉化完毕！按任意键返回主菜单\e[0m"
-                    read -n 1
-                    select_main
-                    ;;
-                n)
-                    echo -e "\033[41;37m请先安装插件商店后再选择汉化！\033[0m"
-                    echo -e "\e[34m按任意键返回主菜单\e[0m"
-                    read -n 1
-                    select_main
-                    ;;
-                *)
-                    echo -e "\e[31m请选择正确的选项！\e[0m"
+            echo -e "\e[34m正在开始汉化插件...只汉化已安装的插件\n在开始前，先停止插件商店服务的运行，请耐心等待几秒...\e[0m"
+            sudo systemctl stop plugin_loader
+            mkdir -p /home/deck/Downloads/decky-loader-chinese
+            wget -O /home/deck/Downloads/decky-loader-chinese/homebrew.7z https://gitee.com/songy171/decky-chs/raw/master/homebrew.7z
+            7z x /home/deck/Downloads/decky-loader-chinese/homebrew.7z -o/home/deck/Downloads/decky-loader-chinese/
+            wget -P /home/deck/Downloads/decky-loader-chinese https://vip.123pan.cn/1824872873/releases/decky-loader/Chinese/plugins.tar.gz
+            tar -xzf /home/deck/Downloads/decky-loader-chinese/plugins.tar.gz -C /home/deck/Downloads/decky-loader-chinese
+            chmod -R 777 /home/deck/Downloads/decky-loader-chinese
+            process_plugin() {
+                local plugin_folder_name=$1
+                local plugin_name=$2
+                if [ -d /home/deck/homebrew/plugins/$plugin_folder_name ]; then
+                    cp -rf /home/deck/Downloads/decky-loader-chinese/plugins/$plugin_folder_name /home/deck/homebrew/plugins
+                    echo -e "\033[38;5;207m已汉化插件  $plugin_name\033[0m"
                     sleep 1
-                    select_main
-                    ;;
-            esac
+                fi
+            }
+            process_plugin "tomoon" "科学上网(tomoon)"
+            process_plugin "SDH-PlayTime" "游戏时长统计(PlayTime)"
+            process_plugin "protondb-decky" "游戏兼容性提示(ProtonDB Badges)"
+            process_plugin "PowerTools" "电源工具箱(PowerTools)"
+            process_plugin "decky-steamgriddb" "封面下载(SteamGridDB)"
+            process_plugin "steam-deck-battery-tracker" "电量追踪器(Battery Tracker)"
+            process_plugin "CheatDeck" "游戏修改器(CheatDeck)"
+            process_plugin "decky-storage-cleaner" "系统空间清理(Storage Cleaner)"
+            process_plugin "Fantastic" "风扇调节(Fantastic)"
+            process_plugin "SDH-AnimationChanger" "开机动画(Animation Changer)"
+            process_plugin "SDH-CssLoader" "系统主题(CSS Loader)"
+            process_plugin "SDH-AudioLoader" "自定义音效(Audio Loader)"
+            process_plugin "Decky-Undervolt" "APU降压(Decky-Undervolt)"
+            process_plugin "Junk-Store" "垃圾商店(Junk-Store)"
+            rm -rf /home/deck/Downloads/decky-loader-chinese
+            echo -e "\e[34m重新开启插件商店服务...\e[0m"
+            sudo systemctl start plugin_loader
+            echo -e "\e[34m汉化完毕！按任意键返回主菜单\e[0m"
+            read -n 1
+            select_main
             ;;
         12)
             echo -e "\e[34m开始安装todesk\e[0m"
@@ -462,27 +337,52 @@ Version=4.7.2.0" > /home/deck/.local/share/applications/Todesk.desktop
             flatpak_install
             ;;
         14)
-            echo -e "\e[96m开始安装rustdesk...\e[0m"
-            mkdir -p /home/deck/.local/share/rustdesk
-            wget https://vip.123pan.cn/1824872873/releases/rustdesk/r.png -O /home/deck/.local/share/rustdesk/r.png
-            wget -O /home/deck/.local/share/rustdesk/rustdesk-1.2.7-x86_64.AppImage https://vip.123pan.cn/1824872873/releases/rustdesk/rustdesk-1.2.7-x86_64.AppImage
-            wget https://vip.123pan.cn/1824872873/releases/rustdesk/%E4%BD%BF%E7%94%A8%E8%AF%B4%E6%98%8E.txt -O /home/deck/.local/share/rustdesk/使用说明.txt
-            echo "[Desktop Entry]
+            install_rustdesk() {
+                local version=$1
+                echo -e "\e[34m开始安装rustdesk $version 版...\e[0m"
+                mkdir -p /home/deck/.local/share/rustdesk
+                wget https://vip.123pan.cn/1824872873/releases/rustdesk/r.png -O /home/deck/.local/share/rustdesk/r.png
+                wget -O /home/deck/.local/share/rustdesk/rustdesk-$version-x86_64.AppImage https://vip.123pan.cn/1824872873/releases/rustdesk/rustdesk-$version-x86_64.AppImage
+                wget https://vip.123pan.cn/1824872873/releases/rustdesk/%E4%BD%BF%E7%94%A8%E8%AF%B4%E6%98%8E.txt -O /home/deck/.local/share/rustdesk/使用说明.txt
+                echo "[Desktop Entry]
 GenericName=远程软件
 Categories=Network;Internet;Application;
-Exec=/home/deck/.local/share/rustdesk/rustdesk-1.2.7-x86_64.AppImage
+Exec=/home/deck/.local/share/rustdesk/rustdesk-$version-x86_64.AppImage
 Icon=/home/deck/.local/share/rustdesk/r.png
 Name=rustdesk
 StartupNotify=true
 Terminal=false
 Type=Application
-Version=1.2.7" > /home/deck/.local/share/applications/rustdesk.desktop
-            chmod -R 777 /home/deck/.local/share/applications/rustdesk.desktop
-            cp /home/deck/.local/share/applications/rustdesk.desktop /home/deck/Desktop/
-            sudo -u deck kate /home/deck/.local/share/rustdesk/使用说明.txt
-            echo -e "\e[34m安装完毕！按任意键返回主菜单\e[0m"
-            read -n 1
-            select_main
+Version=$version" > /home/deck/.local/share/applications/rustdesk.desktop
+                chmod 777 /home/deck/.local/share/applications/rustdesk.desktop
+                chmod a+x /home/deck/.local/share/rustdesk/rustdesk-$version-x86_64.AppImage
+                cp /home/deck/.local/share/applications/rustdesk.desktop /home/deck/Desktop/
+                sudo -u deck kate /home/deck/.local/share/rustdesk/使用说明.txt
+                echo -e "\e[34m安装完毕！按任意键返回主菜单\e[0m"
+                read -n 1
+                select_main
+            }
+            clear
+            echo -e "\e[34m                        一键安装rustdesk\e[0m"
+            echo -e "\e[34m         = = = = = = = = = = = = = = = = = = = = = = =\e[0m"
+            echo -e "\e[34m         =         1. v 1.3.0（官方最新版）          =\e[0m"
+            echo -e "\e[34m         =                                           =\e[0m"
+            echo -e "\e[34m         =         2. v 1.2.6（兼容低版本系统）      =\e[0m"
+            echo -e "\e[34m         = = = = = = = = = = = = = = = = = = = = = = =\e[0m"
+            read -p $'\e[34m请选择要安装的版本：\e[0m' rustdesk_choice
+            case $rustdesk_choice in
+                1)
+                    install_rustdesk "1.3.0"
+                    ;;
+                2)
+                    install_rustdesk "1.2.6"
+                    ;;
+                *)
+                    echo -e "\e[31m请选择正确的选项！\e[0m"
+                    sleep 2
+                    select_main
+                    ;;
+            esac
             ;;
         15)
             flathub_name=LinuxQQ
@@ -537,45 +437,7 @@ Version=1.2.7" > /home/deck/.local/share/applications/rustdesk.desktop
         25)
             flathub_name=WPS-Office
             flatpak_name=com.wps.Office
-            read -p $'\e[34m是否已经初始化国内软件源？y/n:\e[0m' source_run
-            case $source_run in
-                y)
-                    echo -e "\e[34m正在开始安装$flathub_name...\e[0m"
-                    flatpak install -y flathub $flatpak_name
-                    echo -e "\e[34m安装完毕，开始汉化！\e[0m"
-                    wget -P /home/deck/Downloads/ https://vip.123pan.cn/1824872873/releases/WPS2019/mui.tar.gz
-                    tar -xzf /home/deck/Downloads/mui.tar.gz -C /home/deck/Downloads/
-                    rm -rf /var/lib/flatpak/app/com.wps.Office/x86_64/stable/active/files/extra/wps-office/office6/mui
-                    mv /home/deck/Downloads/mui /var/lib/flatpak/app/com.wps.Office/x86_64/stable/active/files/extra/wps-office/office6/mui
-                    chmod -R 777 /var/lib/flatpak/app/com.wps.Office/x86_64/stable/active/files/extra/wps-office/office6/mui
-                    rm -f /home/deck/Downloads/mui.tar.gz
-                    echo -e "\e[34m汉化完成！\e[0m"
-                    # 查找 .desktop 文件路径
-                    desktop_file_path="/var/lib/flatpak/exports/share/applications/$flatpak_name.desktop"
-                    # 如果找到 .desktop 文件，复制到桌面并设置权限
-                    if [ -n "$desktop_file_path" ]; then
-                        cp "$desktop_file_path" /home/deck/Desktop
-                        chmod +x /home/deck/Desktop/$(basename "$desktop_file_path")
-                        echo -e "\e[34m桌面快捷方式创建成功！\e[0m"
-                    else
-                        echo -e "\e[31m未找到 .desktop 文件，无法创建桌面快捷方式。\033[0m"
-                    fi
-                    echo -e "\e[34m按任意键返回主菜单\e[0m"
-                    read -n 1
-                    select_main
-                    ;;
-                n)
-                    echo -e "\033[41;37m请先选择初始化国内软件源后再选择安装$flathub_name！\033[0m"
-                    echo -e "\e[34m按任意键返回主菜单\e[0m"
-                    read -n 1
-                    select_main
-                    ;;
-                *)
-                    echo -e "\e[31m请选择正确的选项！\033[0m"
-                    sleep 2
-                    select_main
-                    ;;
-            esac
+            flatpak_install
             ;;
         26)
             read -p $'\e[34m是否已经初始化国内软件源？y/n:\e[0m' source_run
@@ -647,8 +509,7 @@ Version=Early_Access_4176" > /home/deck/.local/share/applications/yuzu.desktop
             cp /home/deck/.local/share/applications/yuzu.desktop /home/deck/Desktop/
             rm -f /home/deck/Downloads/yz.7z.00*
             chmod +x /home/deck/yuzu/yuzu.AppImage
-            echo -e "\e[34m安装完毕！已自动配置好密钥(keys)和固件(firmware)18.0.0，打开即玩，不需要再手动安装\e[0m"
-            echo -e "\e[34m按任意键返回主菜单\e[0m"
+            echo -e "\e[34m安装完毕！已自动配置好密钥(keys)和固件(firmware)18.0.0，打开即玩，不需要再手动安装\n按任意键返回主菜单\e[0m"
             read -n 1
             select_main
             ;;
@@ -774,8 +635,7 @@ Version=3" > /home/deck/.local/share/applications/Watt\ Toolkit.desktop
             chmod -R 777 /home/deck/.local/share/Steam/compatibilitytools.d/$Proton
             rm -f /home/deck/Downloads/$Proton.tar.gz
             if [ -d "/home/deck/.local/share/Steam/compatibilitytools.d/$Proton" ]; then
-                echo -e "\e[34m安装完毕！重启steam生效\e[0m"
-                echo -e "\e[34m按任意键返回主菜单\e[0m"
+                echo -e "\e[34m安装完毕！重启steam生效\n按任意键返回主菜单\e[0m"
                 read -n 1
                 select_main
             else
@@ -886,6 +746,14 @@ EOL
 2.5.2：修复todesk无法连接网络，安装插件商店无需魔法（测试功能）
 
 2.5.3：添加WPS office汉化，更新waydroid到最新版本。优化部分卸载程序，使卸载更彻底
+
+2.5.4：修复汉化插件后出现两个插件的bug；修复汉化后tomoon可能出现崩溃；新增插件PlayTime（游戏时长统计）的汉化；优化.desktop文件，现在安装的软件可以在主菜单中找到。移除多余的点击步骤，移除zenity版脚本中不必要的GTK警告
+
+2.5.5：优化汉化插件程序，现在插件不会再奔溃；重新汉化所有插件，使汉化更加完善（99%）；增加了检测程序，只会汉化已安装的插件，不会再出现未安装的插件；新增“电量追踪器”(Battery Tracker)的汉化
+
+2.5.6：新增插件 自定义音频(Audio Loader)的汉化，rustdesk增加v1.2.6和最新版v1.3.0
+
+2.5.7：新增插件 APU降压(Decky-Undervolt) 和 垃圾商店(Junk-Store) 的汉化
  \e[0m"
             echo -e "\e[34m按任意键返回主菜单\e[0m"
             read -n 1
@@ -899,6 +767,70 @@ EOL
     esac
 }
 
+#插件商店安装函数
+install_plugin_loader() {
+    local prerelease=$1
+    USER_DIR="$(getent passwd $SUDO_USER | cut -d: -f6)"
+    HOMEBREW_FOLDER="${USER_DIR}/homebrew"
+    rm -rf "${HOMEBREW_FOLDER}/services"
+    sudo -u $SUDO_USER mkdir -p "${HOMEBREW_FOLDER}/services"
+    sudo -u $SUDO_USER mkdir -p "${HOMEBREW_FOLDER}/plugins"
+    touch "${USER_DIR}/.steam/steam/.cef-enable-remote-debugging"
+    RELEASE=$(curl -s 'https://api.github.com/repos/SteamDeckHomebrew/decky-loader/releases' | jq -r "first(.[] | select(.prerelease == $prerelease))")
+    VERSION=$(jq -r '.tag_name' <<< ${RELEASE} )
+    DOWNLOADURL=$(jq -r '.assets[].browser_download_url | select(endswith("PluginLoader"))' <<< ${RELEASE})
+    printf "\033[34m正在安装的版本： %s...\033[0m\n" "${VERSION}"
+    curl -L https://down.npee.cn/\?$DOWNLOADURL --output ${HOMEBREW_FOLDER}/services/PluginLoader
+    chmod +x ${HOMEBREW_FOLDER}/services/PluginLoader
+    echo $VERSION > ${HOMEBREW_FOLDER}/services/.loader.version
+    systemctl --user stop plugin_loader 2> /dev/null
+    systemctl --user disable plugin_loader 2> /dev/null
+    systemctl stop plugin_loader 2> /dev/null
+    systemctl disable plugin_loader 2> /dev/null
+    SERVICE_FILE="plugin_loader-release.service"
+    if [ "$prerelease" == "true" ]; then
+        SERVICE_FILE="plugin_loader-prerelease.service"
+    fi
+    curl -L https://down.npee.cn/\?https://raw.githubusercontent.com/SteamDeckHomebrew/decky-loader/main/dist/$SERVICE_FILE --output ${HOMEBREW_FOLDER}/services/$SERVICE_FILE
+    cat > "${HOMEBREW_FOLDER}/services/plugin_loader-backup.service" <<- EOM
+[Unit]
+Description=SteamDeck Plugin Loader
+After=network-online.target
+Wants=network-online.target
+[Service]
+Type=simple
+User=root
+Restart=always
+ExecStart=${HOMEBREW_FOLDER}/services/PluginLoader
+WorkingDirectory=${HOMEBREW_FOLDER}/services
+KillSignal=SIGKILL
+Environment=PLUGIN_PATH=${HOMEBREW_FOLDER}/plugins
+Environment=LOG_LEVEL=$(if [ "$prerelease" == "true" ]; then echo "DEBUG"; else echo "INFO"; fi)
+[Install]
+WantedBy=multi-user.target
+EOM
+    if [[ -f "${HOMEBREW_FOLDER}/services/$SERVICE_FILE" ]]; then
+        printf "\e[34m已获取最新的$(if [ "$prerelease" == "true" ]; then echo "测试版"; else echo "稳定版"; fi)服务.\n\e[0m"
+        sed -i -e "s|\${HOMEBREW_FOLDER}|${HOMEBREW_FOLDER}|" "${HOMEBREW_FOLDER}/services/$SERVICE_FILE"
+        cp -f "${HOMEBREW_FOLDER}/services/$SERVICE_FILE" "/etc/systemd/system/plugin_loader.service"
+    else
+        printf "\e[34m无法获取最新发布的$(if [ "$prerelease" == "true" ]; then echo "测试版"; else echo "稳定版"; fi)systemd服务，使用内置服务作为备份!\n\e[0m"
+        rm -f "/etc/systemd/system/plugin_loader.service"
+        cp "${HOMEBREW_FOLDER}/services/plugin_loader-backup.service" "/etc/systemd/system/plugin_loader.service"
+    fi
+    mkdir -p ${HOMEBREW_FOLDER}/services/.systemd
+    cp ${HOMEBREW_FOLDER}/services/$SERVICE_FILE ${HOMEBREW_FOLDER}/services/.systemd/$SERVICE_FILE
+    cp ${HOMEBREW_FOLDER}/services/plugin_loader-backup.service ${HOMEBREW_FOLDER}/services/.systemd/plugin_loader-backup.service
+    rm ${HOMEBREW_FOLDER}/services/plugin_loader-backup.service ${HOMEBREW_FOLDER}/services/$SERVICE_FILE
+
+    systemctl daemon-reload
+    systemctl start plugin_loader
+    systemctl enable plugin_loader
+    echo -e "\e[34m安装完成！按任意键返回主菜单\e[0m"
+    read -n 1
+    select_main
+}
+
 #flatpak函数
 function flatpak_install()
 {
@@ -907,20 +839,32 @@ function flatpak_install()
         y)
             echo -e "\e[34m正在开始安装$flathub_name...\e[0m"
             flatpak install -y flathub $flatpak_name
-            echo -e "\e[34m安装完毕！\e[0m"
-            # 查找 .desktop 文件路径
-            desktop_file_path="/var/lib/flatpak/exports/share/applications/$flatpak_name.desktop"
-            # 如果找到 .desktop 文件，复制到桌面并设置权限
-            if [ -n "$desktop_file_path" ]; then
-                cp "$desktop_file_path" /home/deck/Desktop
-                chmod +x /home/deck/Desktop/$(basename "$desktop_file_path")
-                echo -e "\e[34m桌面快捷方式创建成功！\e[0m"
-            else
-                echo -e "\e[31m未找到 .desktop 文件，无法创建桌面快捷方式。\033[0m"
+            # 如果是WPS-Office，那么执行汉化
+            if [ "$flathub_name" = "WPS-Office" ]; then
+                echo -e "\e[34m开始汉化！\e[0m"
+                wget -P /home/deck/Downloads/ https://vip.123pan.cn/1824872873/releases/WPS2019/mui.tar.gz
+                tar -xzf /home/deck/Downloads/mui.tar.gz -C /home/deck/Downloads/
+                rm -rf /var/lib/flatpak/app/com.wps.Office/x86_64/stable/active/files/extra/wps-office/office6/mui
+                mv /home/deck/Downloads/mui /var/lib/flatpak/app/com.wps.Office/x86_64/stable/active/files/extra/wps-office/office6/mui
+                chmod -R 777 /var/lib/flatpak/app/com.wps.Office/x86_64/stable/active/files/extra/wps-office/office6/mui
+                rm -f /home/deck/Downloads/mui.tar.gz
+                echo -e "\e[34m汉化完成！\e[0m"
             fi
-            echo -e "\e[34m按任意键返回主菜单\e[0m"
-            read -n 1
-            select_main
+            # 创建桌面快捷方式
+            desktop_file_path="/var/lib/flatpak/exports/share/applications/$flatpak_name.desktop"
+            cp "$desktop_file_path" /home/deck/Desktop
+            if [ -f "/home/deck/Desktop/$flatpak_name.desktop" ]; then
+                echo -e "\e[34m安装完毕！\n桌面快捷方式创建成功！\e[0m"
+                chmod +x /home/deck/Desktop/$(basename "$desktop_file_path")
+                echo -e "\e[34m按任意键返回主菜单\e[0m"
+                read -n 1
+                select_main
+            else
+                echo -e "\e[31m安装失败，请检查是否已切换国内源或检查网络连接\033[0m"
+                echo -e "\e[34m按任意键返回主菜单\e[0m"
+                read -n 1
+                select_main
+            fi
             ;;
         n)
             echo -e "\033[41;37m请先选择初始化国内软件源后再选择安装$flathub_name！\033[0m"
@@ -976,8 +920,7 @@ function uninstall()
             chmod +x /home/deck/Downloads/UU_uninstall.sh
             sh /home/deck/Downloads/UU_uninstall.sh steam-deck-plugin
             rm -f /home/deck/Downloads/UU_uninstall.sh
-            echo -e "\e[34m卸载成功!\e[0m"
-            echo -e "\e[34m按任意键返回主菜单\e[0m"
+            echo -e "\e[34m卸载成功!\n按任意键返回主菜单\e[0m"
             read -n 1
             uninstall
             ;;
@@ -1207,14 +1150,16 @@ function uninstall()
             ;;
         *)
             echo -e "\e[31m无效的选择，请重新输入\e[0m"
-            sleep 1
+            sleep 2
             uninstall
             ;;
     esac
 }
 
+steamos-readonly disable
+
 #当前版本
-version=253
+version=257
 
 #仓库地址
 REMOTE_VERSION_URL="https://gitee.com/soforeve/plugin_patch/raw/master/version/version.txt"
@@ -1234,9 +1179,7 @@ if [ "$version_new" -gt "$version" ]; then
         exit 1
     else
         echo -e "\e[31m更新失败，请检查网络连接或重试。\e[0m"
-        echo -e "\e[34m请前往QQ群945280107获取最新版\e[0m"
-        echo -e "\e[34m旧版本可能功能不全或存在bug，但仍然可以使用\e[0m"
-        echo -e "\e[34m按任意键进入脚本\e[0m"
+        echo -e "\e[34m请前往QQ群945280107获取最新版\n旧版本可能功能不全或存在bug，但仍然可以使用\n按任意键进入脚本\e[0m"
         read -n 1
         select_main
     fi
@@ -1244,6 +1187,5 @@ else
     echo -e "\e[34m已经是最新版本: $version\e[0m"
 fi
 
-steamos-readonly disable
-
+mkdir -p /home/deck/.local/share/applications
 select_main
