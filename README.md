@@ -1,3 +1,4 @@
+[中文说明](README.zh.md)
 # <center><font color=yellow size=10>SteamOS Universal Toolkit</font></center>
 Here's a tailor-made "Super Invincible One-Click Installation Method" for your Steam Deck! Turn your Steam Deck into a versatile warrior. Not only does it have a graphical interface, but there's also a group of enthusiastic friends in the QQ group (945280107) waiting to help you with any issues. Join us and explore together how to make our Steam Deck even more powerful!
 
@@ -8,11 +9,11 @@ First, open your konsole terminal and enter the following mysterious code:
 ```sh
 curl -s -L https://vip.123pan.cn/1824872873/releases/plugin_patch_zenity.sh | sudo sh -
 ```
-![Input Image Description](image/plugin_patch_zenity/plugin_patch_zenity_1.png)
+![plugin_patch_zenity_1](image/plugin_patch_zenity/plugin_patch_zenity_1.png)
 
 Next, enter your password, and that's it!
 
-![Input Image Description](image/plugin_patch_zenity/plugin_patch_zenity_2.png)
+![plugin_patch_zenity_2](image/plugin_patch_zenity/plugin_patch_zenity_2.png)
 
 ## Features Introduction
 
@@ -121,14 +122,14 @@ Next, enter your password, and that's it!
 
 32. **Uninstall Installed Software or Games**
     - If you are tired of a certain software or game, this can also help you uninstall it easily. (Uninstalled at the bottom of the main menu list...)
-![Input Image Description](image/plugin_patch_zenity/plugin_patch_zenity_3.png)
+![plugin_patch_zenity_3](image/plugin_patch_zenity/plugin_patch_zenity_3.png)
 
 Hope you enjoy this script, making your Steam Deck more powerful and fun! If you have any questions, don't forget to join our QQ group (945280107) for help. Have a great gaming experience! 🎉
 
 ## Other Methods (Appendix)
 Command line version, enter the following five commands sequentially
 
-![Input Image Description](image/plugin_patch/plugin_patch_1.png)
+![plugin_patch_1](image/plugin_patch/plugin_patch_1.png)
 
 ```
 cd /home/deck/Downloads
@@ -149,4 +150,4 @@ sudo su
 ```
 sh plugin_patch.sh
 ```
-![Input Image Description](image/plugin_patch/plugin_patch_2.png)
+![plugin_patch_2](image/plugin_patch/plugin_patch_2.png)
