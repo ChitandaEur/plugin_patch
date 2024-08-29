@@ -1,207 +1,152 @@
-[中文说明](README.zh.md)
-# **_plugin_patch_**
+# <center><font color=yellow size=10>SteamOS Universal Toolkit</font></center>
+Here's a tailor-made "Super Invincible One-Click Installation Method" for your Steam Deck! Turn your Steam Deck into a versatile warrior. Not only does it have a graphical interface, but there's also a group of enthusiastic friends in the QQ group (945280107) waiting to help you with any issues. Join us and explore together how to make our Steam Deck even more powerful!
 
-If you have any features you want to add or bugs, please join the QQ group: 945280107 for feedback.
+## Usage Tutorial
 
-#### Command Line Version Introduction
+First, open your konsole terminal and enter the following mysterious code:
 
-A script that integrates various software installations on Steam Deck. It is simple and convenient to use, without a graphical interface.
+```sh
+curl -s -L https://vip.123pan.cn/1824872873/releases/plugin_patch_zenity.sh | sudo sh -
+```
+![Input Image Description](image/plugin_patch_zenity/plugin_patch_zenity_1.png)
 
-![Interface Example](image/plugin_patch/plugin_patch.sh.png)
+Next, enter your password, and that's it!
 
-#### ~~Usage Tutorial~~No need to trouble yourself, the following command will solve it.
+![Input Image Description](image/plugin_patch_zenity/plugin_patch_zenity_2.png)
+
+## Features Introduction
+
+1. **Initialize Domestic Software Sources, Update System**
+   - This is a mandatory option when opening the script, otherwise, most functions will not work. The process takes about 5 minutes, and remember to restart after completion to make your system more complete!
+
+2. **Install UU Acceleration Plugin**
+   - Make your Steam store fly, free acceleration, other games require payment. Only accelerates Steam and its games, not including the Discover store and others.
+
+3. **Install Xunyou Acceleration Plugin**
+   - Same as above, no further explanation.
+
+4. **Install Qiyou Acceleration Plugin**
+   - Still the same, you know.
+
+5. **Adjust Virtual Memory Size**
+   - For some games, it effectively solves issues like stuttering and crashes. It's like giving your computer a cup of coffee, recommended size is 30, not exceeding 50.
+
+6. **steamcommunity302**
+   - Accelerate your Steam community, install and it starts automatically, no manual operation needed.
+
+7. **Install Plugin Store**
+   - Domestic source plugin store, sometimes the network might be a bit moody, don't worry, try again in a couple of days.
+     - Please enable developer mode and CEF remote debugging in game mode before installation.
+
+8. **Official Source Plugin Store**
+   - Official source stable plugin store, install directly, no VPN needed.
+
+9. **Beta Plugin Store**
+   - Exclusive for beta systems (Steam family group beta, beta test version), install directly, no VPN needed.
+
+10. **Install tomoon**
+    - Install the plugin store first, then install tomoon. Sometimes the network might be a bit moody, don't worry, try again in a couple of days.
+
+11. **Plugin Store Localization**
+    - Install the plugin store first, then localize.
+    - Currently supported localized plugins:
+      ```plaintext
+      process_plugin "tomoon" "Science Internet (tomoon)"
+      process_plugin "SDH-PlayTime" "Game Time Statistics (PlayTime)"
+      process_plugin "protondb-decky" "Game Compatibility Tips (ProtonDB Badges)"
+      process_plugin "PowerTools" "Power Tools (PowerTools)"
+      process_plugin "decky-steamgriddb" "Cover Download (SteamGridDB)"
+      process_plugin "steam-deck-battery-tracker" "Battery Tracker (Battery Tracker)"
+      process_plugin "CheatDeck" "Game Modifier (CheatDeck)"
+      process_plugin "decky-storage-cleaner" "System Space Cleaning (Storage Cleaner)"
+      process_plugin "Fantastic" "Fan Control (Fantastic)"
+      process_plugin "SDH-AnimationChanger" "Boot Animation (Animation Changer)"
+      process_plugin "SDH-CssLoader" "System Theme (CSS Loader)"
+      process_plugin "SDH-AudioLoader" "Custom Sound Effects (Audio Loader)"
+      process_plugin "Decky-Undervolt" "APU Voltage Reduction (Decky-Undervolt)"
+      process_plugin "Junk-Store" "Junk Store (Junk-Store)"
+      ```
+
+12. **Install todesk**
+    - Remote software. This is a modified version, enter the correct terminal password in the pop-up password box during installation (this is important).
+
+13. **Install Anydesk**
+    - Must execute the initialization of domestic software sources before installation.
+
+14. **Install rustdesk**
+    - Remote software, an alternative to todesk.
+
+15. **Install QQ**
+    - Linux native version, must execute the initialization of domestic software sources first.
+
+16. **Install WeChat**
+
+17. **Install Edge Browser**
+
+18. **Install Google Browser**
+
+19. **Install Baidu Netdisk**
+
+20. **Install QQ Music**
+
+21. **Install NetEase Cloud Music**
+    - Currently seems to have some issues, cannot be used.
+
+22. **Install wiliwili**
+
+23. **Install OBS Studio**
+
+24. **Install ProtonUp-Qt**
+
+25. **Install WPS-Office**
+    - Now localized.
+
+26. **Install Minecraft**
+    - HMCL launcher, must execute the initialization of domestic software sources first. After entering, switch to Chinese manually.
+
+27. **Install yuzu Emulator**
+    - The latest early release version.
+
+28. **Emulator Gyroscope**
+    - Suitable for yuzu and cemu emulators, for example, you can use the deck's built-in gyroscope to pass through Zelda temples. After installation, run `systemctl --user -q enable --now sdgyrodsu.service` in a new terminal to start the service.
+
+29. **Install Treasure Gourd**
+    - A multifunctional tool, with features like accelerating Steam, shader cache cleaning, store source switching, community compatibility layer download, LAN file transfer, memory performance optimization, various problem-solving tutorials, etc., a very powerful tool.
+
+30. **Install Waydroid Android Emulator**
+    - Allows downloading mobile applications on the deck. Network requirements are necessary, must enable magic.
+
+31. **Install steam++**
+    - A bit difficult to use, not recommended, not as good as steamcommunity302 (bushi).
+
+32. **Uninstall Installed Software or Games**
+    - If you are tired of a certain software or game, this can also help you uninstall it easily. (Uninstalled at the bottom of the main menu list...)
+![Input Image Description](image/plugin_patch_zenity/plugin_patch_zenity_3.png)
+
+Hope you enjoy this script, making your Steam Deck more powerful and fun! If you have any questions, don't forget to join our QQ group (945280107) for help. Have a great gaming experience! 🎉
+
+## Other Methods (Appendix)
+Command line version, enter the following five commands sequentially
+
+![Input Image Description](image/plugin_patch/plugin_patch_1.png)
 
 ```
-curl -s -L https://raw.githubusercontent.com/ChitandaEur/plugin_patch/main/plugin_patch_zenity.sh | sudo sh -
-```
-
-#### Usage Tutorial
-
-1. Download the script to deck
-
-```bash
 cd /home/deck/Downloads
 ```
-![1.1](image/plugin_patch/1.1.png)
 
-```bash
-curl -O https://raw.githubusercontent.com/ChitandaEur/plugin_patch/main/plugin_patch.sh
 ```
-![1](image/plugin_patch/1.png)
+curl -O https://vip.123pan.cn/1824872873/releases/plugin_patch.sh
+```
 
-2. Grant execution permission to the script
-
-```bash
+```
 chmod +x plugin_patch.sh
 ```
-![2](image/plugin_patch/2.png)
 
-3. Switch to the administrator user (enter password)
-
-```bash
+```
 sudo su
 ```
-![3](image/plugin_patch/3.png)
 
-4. Run the script
-
-```bash
+```
 sh plugin_patch.sh
 ```
-![4](image/plugin_patch/4.png)
-
-# **_plugin_patch_zenity_**
-
-#### Graphical Version Introduction
-
-A script that integrates various software installations on Steam Deck. It is simple and convenient to use, with a graphical interface.
-![Interface Example](image/plugin_patch_zenity/plugin_patch_zenity.sh.png)
-
-#### Usage Tutorial
-
-1. Download the script to deck
-
-```bash
-cd /home/deck/Downloads
-```
-![1.1](image/plugin_patch_zenity/1.1.png)
-
-```bash
-curl -O https://raw.githubusercontent.com/ChitandaEur/plugin_patch/main/plugin_patch_zenity.sh
-```
-![1](image/plugin_patch_zenity/1.png)
-
-2. Grant execution permission to the script
-
-```bash
-chmod +x plugin_patch_zenity.sh
-```
-![2](image/plugin_patch_zenity/2.png)
-
-3. Switch to the administrator user (enter password)
-
-```bash
-sudo su
-```
-![3](image/plugin_patch_zenity/3.png)
-
-4. Run the script
-
-```bash
-sh plugin_patch_zenity.sh
-```
-![4](image/plugin_patch_zenity/4.png)
-
-# **_Function Introduction_**
-
-1. Initialize domestic software sources and update the system
-   This option must be selected when opening the script; otherwise, most functions will be unavailable.
-   The process takes about 5 minutes.
-   It is strongly recommended to restart the system immediately after execution.
-
-2. Install UU Accelerator Plugin
-   Accelerates Steam store for free; other games require a fee.
-   **_Only accelerates Steam, not other software installations_**
-   **_Only accelerates Steam, not other software installations_**
-   **_Only accelerates Steam, not other software installations_**
-
-3. Install Xunyou Accelerator Plugin
-   Same as above.
-
-4. Install Qiyou Accelerator Plugin
-   Same as above.
-
-5. Adjust virtual memory size
-   Improves stuttering issues for some games and solves crash problems. Recommended size is 30, do not exceed 50.
-
-6. Steamcommunity302
-   Software to accelerate Steam. Once installed, it starts automatically on boot, no need to open it manually.
-
-7. Install Plugin Store
-   Domestic source plugin store. Installation may fail due to network issues (not your network issue, try again in a few days).
-   **_Enable developer mode and CEF remote debugging in game mode before installation_**
-   **_Install the stable store for the stable system, and the beta store for the beta system_**
-   Wondering how to check if you're on the stable or beta version? In desktop mode, check in Steam settings -> Interface. In game mode, check in Settings -> System.
-
-8. Official Source Plugin Store
-   Stable plugin store from official sources, located abroad. Requires a VPN; UU, Xunyou, Qiyou, and Steamcommunity302 are ineffective.
-
-9. Beta Plugin Store
-   For beta systems only (Steam Family Group Beta, Beta version), located abroad. Requires a VPN; UU, Xunyou, Qiyou, and Steamcommunity302 are ineffective.
-
-10. Install Tomoon
-    **_Install the plugin store before installing Tomoon, do not install Tomoon directly_**
-    Installation may fail due to network issues (not your network issue, try again in a few days).
-
-11. Plugin Store Localization
-    **_Install the plugin store and Tomoon before localizing, do not localize directly_**
-    Localization for 8 commonly used plugins.
-    Provided by the expert Steam Deck Superman.
-
-12. Install ToDesk
-    Remote software. This is a modified version, pay attention to prompts during installation. If you have the official version, uninstall it according to the prompts.
-
-13. Install AnyDesk
-    Remote software. Must execute the initialization of domestic software sources first.
-
-14. Install RustDesk
-    Remote software, an alternative to ToDesk.
-
-15. Install QQ
-    Native Linux version. Must execute the initialization of domestic software sources first.
-
-16. Install WeChat
-    Native Linux version. Must execute the initialization of domestic software sources first.
-
-17. Install Edge Browser
-    Native Linux version. Must execute the initialization of domestic software sources first.
-
-18. Install Google Chrome
-    Native Linux version. Must execute the initialization of domestic software sources first.
-
-19. Install Baidu Netdisk
-    Native Linux version. Must execute the initialization of domestic software sources first.
-
-20. Install QQ Music
-    Native Linux version. Must execute the initialization of domestic software sources first.
-
-21. Install NetEase Cloud Music
-    Native Linux version. Must execute the initialization of domestic software sources first.
-    Currently has some issues and may not work.
-
-22. Install Wiliwili
-    Native Linux version. Must execute the initialization of domestic software sources first.
-    Bilibili client.
-
-23. Install WPS-Office
-    Native Linux version. Must execute the initialization of domestic software sources first.
-
-24. Install ProtonUp-Qt
-    Compatibility layer installation software. Must execute the initialization of domestic software sources first.
-
-25. Install OBS Studio
-    Live streaming and recording software. Must execute the initialization of domestic software sources first.
-
-26. Install Minecraft
-    HMCL launcher. Must execute the initialization of domestic software sources first.
-    After entering, you need to manually switch to Chinese.
-
-27. Install Yuzu Emulator
-    Latest release version.
-
-28. Emulator Gyroscope
-    Suitable for Yuzu and Cemu emulators, for example, you can use the built-in gyroscope of the deck to solve Zelda temples.
-    After installation, you need to run `systemctl --user -q enable --now sdgyrodsu.service` in a new terminal to start the service.
-
-29. Install Baohulu
-    A multifunctional tool with features like Steam acceleration, shader cache cleaning, store source switching, community compatibility layer download, file transfer within the same LAN, memory performance optimization, various problem-solving tutorials, and more. It is a very powerful tool.
-
-30. Install Waydroid Android Emulator
-    Allows downloading mobile applications on the deck.
-    **_Requires a VPN_**
-
-31. Install Steam++
-    A bit difficult to use, not recommended. Steamcommunity302 is better (not really).
-
-32. Uninstall Installed Software
-    ![Input Image Description](image/uninstall.png)
+![Input Image Description](image/plugin_patch/plugin_patch_2.png)
